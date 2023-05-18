@@ -137,8 +137,8 @@ modules:
       - -DENABLE_X11=OFF
     sources:
       - type: archive
-        url: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-23.2.1.tar.gz
-        sha256: 186bb82fc9fe23ed21be51a58036c66b109f64c49d923ebe8ac922133338991e
+        url: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-23.2.2.tar.gz
+        sha256: 12f23a78104edc1c9bfa755effd2723866d107ad752f72d3839fcc8db0503cec
         x-checker-data:
           type: anitya
           project-id: 21814
