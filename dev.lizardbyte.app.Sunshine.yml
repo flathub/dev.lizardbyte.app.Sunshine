@@ -76,6 +76,11 @@ modules:
       - type: archive
         url: http://avahi.org/download/avahi-0.8.tar.gz
         sha256: 060309d7a333d38d951bc27598c677af1796934dbd98e1024e7ad8de798fedda
+        x-checker-data:
+          type: anitya
+          project-id: 147
+          stable-only: true
+          url-template: http://avahi.org/download/avahi-$version.tar.gz
       - type: git
         url: https://src.fedoraproject.org/rpms/avahi.git
         commit: e8ad0f7bbb7fdf82a0f0be128bab07b5928322f0
@@ -137,8 +142,8 @@ modules:
       - -DENABLE_X11=OFF
     sources:
       - type: archive
-        url: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-23.2.1.tar.gz
-        sha256: 186bb82fc9fe23ed21be51a58036c66b109f64c49d923ebe8ac922133338991e
+        url: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-23.2.2.tar.gz
+        sha256: 12f23a78104edc1c9bfa755effd2723866d107ad752f72d3839fcc8db0503cec
         x-checker-data:
           type: anitya
           project-id: 21814
