@@ -76,6 +76,11 @@ modules:
       - type: archive
         url: http://avahi.org/download/avahi-0.8.tar.gz
         sha256: 060309d7a333d38d951bc27598c677af1796934dbd98e1024e7ad8de798fedda
+        x-checker-data:
+          type: anitya
+          project-id: 147
+          stable-only: true
+          url-template: http://avahi.org/download/avahi-$version.tar.gz
       - type: git
         url: https://src.fedoraproject.org/rpms/avahi.git
         commit: e8ad0f7bbb7fdf82a0f0be128bab07b5928322f0
