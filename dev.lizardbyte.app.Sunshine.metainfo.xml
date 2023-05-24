@@ -21,7 +21,7 @@
 
   <description>
     <p>NOTE: Allow Sunshine Virtual Input (Required)</p>
-    <p>sudo chown $USER /dev/uinput && echo 'KERNEL=="uinput", SUBSYSTEM=="misc",
+    <p>sudo chown $USER /dev/uinput &amp;&amp; echo 'KERNEL=="uinput", SUBSYSTEM=="misc",
       OPTIONS+="static_node=uinput", TAG+="uaccess"' | sudo tee
       /etc/udev/rules.d/85-sunshine-input.rules</p>
     <p>NOTE: Sunshine uses a self-signed certificate. The web browser will report it as not secure,
