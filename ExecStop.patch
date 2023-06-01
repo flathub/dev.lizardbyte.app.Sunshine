@@ -1,0 +1,10 @@
+--- ~/sunshine.service.in
++++ ~/sunshine.service.in
+@@ -8,6 +8,7 @@
+ 
+ [Service]
+ ExecStart=@SUNSHINE_EXECUTABLE_PATH@
++ExecStop=flatpak kill dev.lizardbyte.app.Sunshine
+ Restart=on-failure
+ RestartSec=5s
+ 
