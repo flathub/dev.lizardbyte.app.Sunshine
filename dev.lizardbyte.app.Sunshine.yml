@@ -184,7 +184,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
-      - -DSUNSHINE_EXECUTABLE_PATH="flatpak run --command=sunshine dev.lizardbyte.app.Sunshine"
+      - -DSUNSHINE_EXECUTABLE_PATH=flatpak run --command=sunshine dev.lizardbyte.app.Sunshine
       - -DSUNSHINE_ENABLE_WAYLAND=ON
       - -DSUNSHINE_ENABLE_X11=ON
       - -DSUNSHINE_ENABLE_DRM=ON
@@ -205,6 +205,8 @@ modules:
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
+      - type: patch
+        path: ExecStop.patch
       - type: patch
         path: spawn-host.patch
       - type: file
