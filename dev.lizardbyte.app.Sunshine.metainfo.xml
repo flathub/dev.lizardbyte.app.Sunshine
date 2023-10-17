@@ -43,8 +43,9 @@
   </description>
 
   <releases>
-    <release version="0.20.0" date="2023-05-29" />
-    <release version="0.19.1" date="2023-03-30" />
+    <release version="0.21.0" date="2023-10-17"/>
+    <release version="0.20.0" date="2023-05-29"/>
+    <release version="0.19.1" date="2023-03-30"/>
   </releases>
 
   <screenshots>
@@ -52,5 +53,5 @@
       <image>https://app.lizardbyte.dev/uno/github/openGraphImages/Sunshine_624x312.png</image>
     </screenshot>
   </screenshots>
-  <content_rating type="oars-1.1" />
+  <content_rating type="oars-1.1"/>
 </component>
