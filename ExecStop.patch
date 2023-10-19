@@ -1,5 +1,5 @@
---- ~/sunshine.service.in
-+++ ~/sunshine.service.in
+--- ~/packaging/linux/sunshine.service.in
++++ ~/packaging/linux/sunshine.service.in
 @@ -8,6 +8,7 @@
  
  [Service]
