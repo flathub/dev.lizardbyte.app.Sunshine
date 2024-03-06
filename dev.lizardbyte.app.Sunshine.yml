@@ -39,19 +39,33 @@ modules:
       - -Ddocbook_docs=disabled
     sources:
       - type: archive
-        url: https://download.gnome.org/sources/libnotify/0.8/libnotify-0.8.3.tar.xz
-        sha256: ee8f3ef946156ad3406fdf45feedbdcd932dbd211ab4f16f75eba4f36fb2f6c0
+        url: https://download.gnome.org/sources/libnotify/0.7/libnotify-0.7.9.tar.xz
+        sha256: 66c0517ed16df7af258e83208faaf5069727dfd66995c4bbc51c16954d674761
+      - type: git
+        url: https://git.almalinux.org/rpms/libnotify.git
+        commit: 09f965f6c29f145799b5da9209fc8c0d617e93ac
+        dest: rpms/libnotify
+        tag: imports/c9/libnotify-0.7.9-8.el9
         x-checker-data:
-          type: gnome
-          name: libnotify
-          stable-only: true
+          type: git
+          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+      - type: shell
+        commands:
+          - cat rpms/libnotify/SOURCES/*.patch | patch -Np1 -d .
       - type: archive
         url: https://download.gnome.org/sources/gnome-common/3.18/gnome-common-3.18.0.tar.xz
         sha256: 22569e370ae755e04527b76328befc4c73b62bfd4a572499fde116b8318af8cf
+      - type: git
+        url: https://git.almalinux.org/rpms/gnome-common.git
+        commit: 7a908ec84bff1f72a26df6660808a76785ab081b
+        dest: rpms/gnome-common
+        tag: imports/c9/gnome-common-3.18.0-13.el9
         x-checker-data:
-          type: gnome
-          name: gnome-common
-          stable-only: true
+          type: git
+          tag-pattern: ^[a-z]+\/[a|c]9\/gnome-common-(\d.+)$
+      - type: shell
+        commands:
+          - cat rpms/gnome-common/SOURCES/*.patch | patch -Np1 -d .
 
   - name: boost
     buildsystem: simple
@@ -60,13 +74,21 @@ modules:
       - ./b2 install variant=release link=shared runtime-link=shared -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://github.com/boostorg/boost/releases/download/boost-1.83.0/boost-1.83.0.tar.xz
-        sha256: c5a0688e1f0c05f354bbd0b32244d36085d9ffc9f932e8a18983a9908096f614
+        url: https://boostorg.jfrog.io/artifactory/main/release/1.75.0/source/boost_1_75_0.tar.gz
+        sha256: aeb26f80e80945e82ee93e5939baebdca47b9dee80a07d3144be1e1a6a66dd6a
+      - type: git
+        url: https://git.almalinux.org/rpms/boost.git
+        commit: 41091bbb1ce8d3f4d3a68b1251ee59aed2fc6652
+        dest: rpms
+        tag: imports/c9/boost-1.75.0-8.el9 
         x-checker-data:
-          type: anitya
-          project-id: 6845
-          stable-only: true
-          url-template: https://github.com/boostorg/boost/releases/download/boost-$version/boost-$version.tar.xz
+          type: git
+          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+      - type: shell
+        commands:
+          - patch -Np0 -i rpms/SOURCES/boost-1.58.0-pool.patch -d .
+          - rm rpms/SOURCES/boost-1.58.0-pool.patch
+          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
 
   - name: avahi
     cleanup:
@@ -100,18 +122,17 @@ modules:
       - type: archive
         url: http://avahi.org/download/avahi-0.8.tar.gz
         sha256: 060309d7a333d38d951bc27598c677af1796934dbd98e1024e7ad8de798fedda
-        x-checker-data:
-          type: anitya
-          project-id: 147
-          stable-only: true
-          url-template: http://avahi.org/download/avahi-$version.tar.gz
       - type: git
-        url: https://src.fedoraproject.org/rpms/avahi.git
-        commit: e8ad0f7bbb7fdf82a0f0be128bab07b5928322f0
+        url: https://git.almalinux.org/rpms/avahi.git
+        commit: 96604f7fe549f6ef55216f15b612633adac74708
         dest: rpms
+        tag: imports/c9/avahi-0.8-15.el9
+        x-checker-data:
+          type: git
+          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
       - type: shell
         commands:
-          - cat rpms/*.patch | patch -Np1 -d .
+          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
           - autoreconf -ivf
 
   - name: libevdev
@@ -123,13 +144,19 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://www.freedesktop.org/software/libevdev/libevdev-1.13.1.tar.xz
-        sha256: 06a77bf2ac5c993305882bc1641017f5bec1592d6d1b64787bad492ab34f2f36
+        url: https://www.freedesktop.org/software/libevdev/libevdev-1.11.0.tar.xz
+        sha256: 63f4ea1489858a109080e0b40bd43e4e0903a1e12ea888d581db8c495747c2d0
+      - type: git
+        url: https://git.almalinux.org/rpms/libevdev.git
+        commit: e7922fef0d494ed7bbbebb175dc64280c0c5d570
+        dest: rpms
+        tag: imports/c9/libevdev-1.11.0-3.el9
         x-checker-data:
-          type: anitya
-          project-id: 20540
-          stable-only: true
-          url-template: https://www.freedesktop.org/software/libevdev/libevdev-$version.tar.xz
+          type: git
+          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+      - type: shell
+        commands:
+          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
 
   - name: numactl
     buildsystem: autotools
@@ -139,11 +166,17 @@ modules:
       - type: archive
         url: https://github.com/numactl/numactl/archive/refs/tags/v2.0.16.tar.gz
         sha256: a35c3bdb3efab5c65927e0de5703227760b1101f5e27ab741d8f32b3d5f0a44c
+      - type: git
+        url: https://git.almalinux.org/rpms/numactl.git
+        commit: 1c313dcb45a9c37be1520a9306329cf6df389017
+        dest: rpms
+        tag: imports/c9/numactl-2.0.16-1.el9
         x-checker-data:
-          type: anitya
-          project-id: 2507
-          stable-only: true
-          url-template: https://github.com/numactl/numactl/archive/refs/tags/v$version.tar.gz
+          type: git
+          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+      - type: shell
+        commands:
+          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
 
   - name: xrandr
     sources:
@@ -188,14 +221,14 @@ modules:
       - type: file
         only-arches:
           - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda_12.2.0_535.54.03_linux.run
-        sha256: ecf3d2afadcbac029f0f4505785810d52d006e4b87ba79ff3f984336a2bbf518
+        url: https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_550.54.14_linux.run
+        sha256: e6a842f4eca9490575cdb68b6b1bb78d47b95a897de48dee292c431892e57d17
         dest-filename: cuda.run
       - type: file
         only-arches:
           - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/12.2.0/local_installers/cuda_12.2.0_535.54.03_linux_sbsa.run
-        sha256: 9c90d79bb63952cd30f1f57f9f8fe11e7a8967bba6f824df45d3464b5d37e5d8
+        url: https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_550.54.14_linux_sbsa.run
+        sha256: b12bfe6c36d32ecf009a6efb0024325c5fc389fca1143f5f377ae2555936e803
         dest-filename: cuda.run
 
   - name: sunshine
@@ -229,6 +262,8 @@ modules:
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
+          versions:
+            <=: '0.21.0'
       - type: patch
         path: ExecStop.patch
       - type: patch
@@ -242,4 +277,3 @@ modules:
       - type: shell
         commands:
           - npm install --offline --cache=flatpak-node/npm-cache
-
