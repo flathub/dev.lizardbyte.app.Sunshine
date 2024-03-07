@@ -250,6 +250,7 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm14/bin/clang++
       - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
+      - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
       - -DSUNSHINE_EXECUTABLE_PATH=flatpak run --command=sunshine dev.lizardbyte.app.Sunshine
       - -DSUNSHINE_ENABLE_WAYLAND=ON
