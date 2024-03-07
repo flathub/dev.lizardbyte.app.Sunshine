@@ -47,11 +47,12 @@
     <release version="0.20.0" date="2023-05-29"/>
     <release version="0.19.1" date="2023-03-30"/>
   </releases>
-
+  <developer_name>LizardByte</developer_name>
   <screenshots>
     <screenshot type="default">
       <image>https://app.lizardbyte.dev/uno/github/openGraphImages/Sunshine_624x312.png</image>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1"/>
+  <launchable type="desktop-id">dev.lizardbyte.app.Sunshine.desktop</launchable>
 </component>
