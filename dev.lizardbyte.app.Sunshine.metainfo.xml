@@ -54,4 +54,5 @@
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1"/>
+  <launchable type="desktop-id">dev.lizardbyte.app.Sunshine.desktop</launchable>
 </component>
