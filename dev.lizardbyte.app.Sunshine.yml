@@ -265,16 +265,14 @@ modules:
       - install -D ../$FLATPAK_ID.metainfo.xml $FLATPAK_DEST/share/metainfo/$FLATPAK_ID.metainfo.xml
       - install -D ../$FLATPAK_ID.desktop $FLATPAK_DEST/share/applications/$FLATPAK_ID.desktop
     sources:
-      - npm-generated-sources.json
+      # - npm-generated-sources.json
       - type: git
         url: https://github.com/LizardByte/Sunshine.git
-        commit: 5bca024899eff8f50e04c1723aeca25fc5e542ca
-        tag: v0.21.0
+        commit: c63637f02f40a92999ba33eb96fffddce5073633
+        tag: v0.22.0
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
-          versions:
-            <=: '0.21.0'
       - type: patch
         path: ExecStop.patch
       - type: patch
@@ -285,7 +283,7 @@ modules:
         path: dev.lizardbyte.app.Sunshine.metainfo.xml
       - type: file
         path: dev.lizardbyte.app.Sunshine.sh
-      - type: shell
-        commands:
-          - npm install --offline --cache=flatpak-node/npm-cache
+      # - type: shell
+      #   commands:
+      #     - npm install --offline --cache=flatpak-node/npm-cache
 
