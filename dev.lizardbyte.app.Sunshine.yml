@@ -222,15 +222,16 @@ modules:
       - -DUPNPC_BUILD_TESTS=OFF
     sources:
       - type: archive
-        url: https://miniupnp.tuxfamily.org/files/miniupnpc-2.2.5.tar.gz
-        sha256: 38acd5f4602f7cf8bcdc1ec30b2d58db2e9912e5d9f5350dd99b06bfdffb517c
+        url: https://miniupnp.tuxfamily.org/files/miniupnpc-2.2.4.tar.gz
+        sha256: 481a5e4aede64e9ef29895b218836c3608d973e77a35b4f228ab1f3629412c4b
       - type: git
         url: https://src.fedoraproject.org/rpms/miniupnpc.git
-        commit: 0d210a4280930ec530075d7488c77c37249203aa
+        commit: c59b323a182785d688c1f60531c4c2277c90a7d1
+        # miniupnpc-2.2.4-2.el9
         dest: rpms
       - type: shell
         commands:
-          - cat rpms/*.patch | patch -Np1 -d .
+          - cat rpms/*.patch | patch -Np2 -d .
 
   - name: cuda
     build-options:
