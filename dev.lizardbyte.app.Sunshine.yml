@@ -1,6 +1,6 @@
 app-id: dev.lizardbyte.app.Sunshine
 runtime: org.freedesktop.Platform
-runtime-version: '22.08'
+runtime-version: "22.08"
 sdk: org.freedesktop.Sdk
 separate-locales: false
 sdk-extensions:
@@ -81,7 +81,7 @@ modules:
         url: https://git.almalinux.org/rpms/boost.git
         commit: 41091bbb1ce8d3f4d3a68b1251ee59aed2fc6652
         dest: rpms
-        tag: imports/c9/boost-1.75.0-8.el9 
+        tag: imports/c9/boost-1.75.0-8.el9
         x-checker-data:
           type: git
           tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
@@ -215,29 +215,29 @@ modules:
           url-template: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-$version.tar.gz
 
   - name: miniupnpc
-    buildsystem: cmake
+    buildsystem: cmake-ninja
     config-opts:
       - -DUPNPC_BUILD_SAMPLE=OFF
       - -DUPNPC_BUILD_SHARED=ON
       - -DUPNPC_BUILD_TESTS=OFF
     sources:
       - type: archive
-        url: https://github.com/miniupnp/miniupnp/archive/refs/tags/miniupnpc_2_2_5.tar.gz
-        sha256: feb2ce11c548115f6e7dead7a523790aceeca92b9fca718f26e5b22303af313c
+        url: https://miniupnp.tuxfamily.org/files/miniupnpc-2.2.5.tar.gz
+        sha256: 38acd5f4602f7cf8bcdc1ec30b2d58db2e9912e5d9f5350dd99b06bfdffb517c
       - type: git
         url: https://src.fedoraproject.org/rpms/miniupnpc.git
         commit: 0d210a4280930ec530075d7488c77c37249203aa
         dest: rpms
-      # - type: shell
-       # commands:
-          # - cat rpms/*.patch | patch -Np1 -d .
+      - type: shell
+        commands:
+          - cat rpms/*.patch | patch -Np1 -d .
 
   - name: cuda
     build-options:
       no-debuginfo: true
     buildsystem: simple
     cleanup:
-      - '*'
+      - "*"
     build-commands:
       - chmod u+x ./cuda.run
       - ./cuda.run --silent --toolkit --toolkitpath=$FLATPAK_DEST/cuda --no-opengl-libs
@@ -263,7 +263,9 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/node18/bin:/usr/lib/sdk/llvm14/bin
       prepend-ld-library-path: /usr/lib/sdk/llvm14/lib
-      cxxflags: -I${C_INCLUDE_PATH}/libevdev-1.0
+      env:
+        npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
+        npm_config_offline: "true"
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm14/bin/clang++
@@ -283,7 +285,7 @@ modules:
       - install -D ../$FLATPAK_ID.metainfo.xml $FLATPAK_DEST/share/metainfo/$FLATPAK_ID.metainfo.xml
       - install -D ../$FLATPAK_ID.desktop $FLATPAK_DEST/share/applications/$FLATPAK_ID.desktop
     sources:
-      # - npm-generated-sources.json
+      - npm-generated-sources.json
       - type: git
         url: https://github.com/LizardByte/Sunshine.git
         commit: c63637f02f40a92999ba33eb96fffddce5073633
@@ -301,7 +303,3 @@ modules:
         path: dev.lizardbyte.app.Sunshine.metainfo.xml
       - type: file
         path: dev.lizardbyte.app.Sunshine.sh
-      # - type: shell
-      #   commands:
-      #     - npm install --offline --cache=flatpak-node/npm-cache
-
