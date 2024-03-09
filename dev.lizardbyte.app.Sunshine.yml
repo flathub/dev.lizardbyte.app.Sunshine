@@ -12,6 +12,7 @@ finish-args:
   - --device=all
   - --env=PULSE_PROP_media.category=Manager
   - --filesystem=home
+  - --filesystem=xdg-config/sunshine
   - --share=ipc
   - --share=network
   - --socket=pulseaudio
