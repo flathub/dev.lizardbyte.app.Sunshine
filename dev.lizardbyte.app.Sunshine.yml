@@ -228,9 +228,9 @@ modules:
         url: https://src.fedoraproject.org/rpms/miniupnpc.git
         commit: 0d210a4280930ec530075d7488c77c37249203aa
         dest: rpms
-      - type: shell
-        commands:
-          - cat rpms/*.patch | patch -Np1 -d .
+      # - type: shell
+       # commands:
+          # - cat rpms/*.patch | patch -Np1 -d .
 
   - name: cuda
     build-options:
