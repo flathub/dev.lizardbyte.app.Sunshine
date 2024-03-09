@@ -215,6 +215,11 @@ modules:
           url-template: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-$version.tar.gz
 
   - name: miniupnpc
+    buildsystem: cmake
+    config-opts:
+      - -DUPNPC_BUILD_SAMPLE=OFF
+      - -DUPNPC_BUILD_SHARED=ON
+      - -DUPNPC_BUILD_TESTS=OFF
     sources:
       - type: archive
         url: https://github.com/miniupnp/miniupnp/archive/refs/tags/miniupnpc_2_2_5.tar.gz
