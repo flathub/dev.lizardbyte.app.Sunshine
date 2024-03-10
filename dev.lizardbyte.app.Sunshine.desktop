@@ -3,7 +3,7 @@ Version=1.0
 Type=Application
 
 Name=Sunshine
-Comment=Self-hosted game stream host for Moonlight. 
+Comment=Self-hosted game stream host for Moonlight
 Categories=AudioVideo;
 
 Icon=dev.lizardbyte.app.Sunshine
