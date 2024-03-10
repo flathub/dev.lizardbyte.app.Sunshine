@@ -285,6 +285,10 @@ modules:
       - install -D ../$FLATPAK_ID.sh $FLATPAK_DEST/bin/$FLATPAK_ID.sh
       - install -D ../$FLATPAK_ID.metainfo.xml $FLATPAK_DEST/share/metainfo/$FLATPAK_ID.metainfo.xml
       - install -D ../$FLATPAK_ID.desktop $FLATPAK_DEST/share/applications/$FLATPAK_ID.desktop
+      - |  # migrate config directory, https://github.com/LizardByte/Sunshine/pull/2034
+          if [ -d "${HOME}/.config/sunshine" ]; then 
+            mv "${HOME}/.config/sunshine" "${XDG_CONFIG_HOME:-~/.config}/sunshine"
+          fi
     sources:
       - npm-generated-sources.json
       - type: git
