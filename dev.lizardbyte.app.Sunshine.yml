@@ -298,6 +298,8 @@ modules:
         path: ExecStop.patch
       - type: patch
         path: spawn-host.patch
+      - type: patch
+        path: dir.patch
       - type: file
         path: dev.lizardbyte.app.Sunshine.desktop
       - type: file
