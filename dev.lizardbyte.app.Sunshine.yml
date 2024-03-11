@@ -296,7 +296,7 @@ modules:
         dest-filename: cuda.run
 
   - name: sunshine
-    buildsystem: cmake
+    buildsystem: cmake-ninja
     builddir: true
     build-options:
       append-path: /usr/lib/sdk/node18/bin:/usr/lib/sdk/llvm14/bin
