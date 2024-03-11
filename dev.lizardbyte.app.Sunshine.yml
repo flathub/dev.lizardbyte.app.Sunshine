@@ -295,11 +295,11 @@ modules:
           type: git
           tag-pattern: ^v([\d.]+)$
       - type: patch
-        path: ExecStop.patch
+        path: patches/ExecStop.patch
       - type: patch
-        path: spawn-host.patch
+        path: patches/spawn-host.patch
       - type: patch
-        path: dir.patch
+        path: patches/dir.patch
       - type: file
         path: dev.lizardbyte.app.Sunshine.desktop
       - type: file
