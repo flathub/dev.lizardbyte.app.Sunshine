@@ -270,6 +270,25 @@ modules:
         commands:
           - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
+  - name: onevpl
+    only-arches:
+      - x86_64
+    buildsystem: cmake
+    config-opts:
+      - -DBUILD_TOOLS=OFF
+      - -DBUILD_TESTS=OFF
+      - -DBUILD_EXAMPLES=OFF
+      - -DINSTALL_EXAMPLE_CODE=OFF
+    sources:
+      - type: archive
+        url: https://github.com/oneapi-src/oneVPL/archive/refs/tags/v2023.4.0.tar.gz
+        sha256: 978398c7bb1665a6ad7a1a15cc57dc0204608e56c88436e376b717320a9e63fd
+        x-checker-data:
+          type: anitya
+          project-id: 242664
+          stable-only: true
+          url-template: https://github.com/oneapi-src/oneVPL/archive/refs/tags/v$version.tar.gz
+
   - name: cuda
     build-options:
       no-debuginfo: true
@@ -308,9 +327,9 @@ modules:
         NVCC_APPEND_FLAGS: -allow-unsupported-compiler
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-      - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm15/bin/clang++
+      # - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm15/bin/clang++
       - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
-      - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+      # - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
       - -DSUNSHINE_EXECUTABLE_PATH=flatpak run --command=sunshine dev.lizardbyte.app.Sunshine
       - -DSUNSHINE_ENABLE_WAYLAND=ON
