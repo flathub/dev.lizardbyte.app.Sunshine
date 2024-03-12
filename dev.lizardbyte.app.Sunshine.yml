@@ -305,12 +305,11 @@ modules:
       env:
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
         npm_config_offline: "true"
+        NVCC_APPEND_FLAGS: -allow-unsupported-compiler
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm15/bin/clang++
       - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
-      # - -DCUDA_NVCC_FLAGS=-allow-unsupported-compiler
-      - -DCMAKE_CUDA_FLAGS=-allow-unsupported-compiler
       - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
       - -DSUNSHINE_EXECUTABLE_PATH=flatpak run --command=sunshine dev.lizardbyte.app.Sunshine
