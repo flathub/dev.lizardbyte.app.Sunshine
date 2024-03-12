@@ -30,6 +30,7 @@ cleanup:
 
 modules:
   - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+
   - name: libnotify
     buildsystem: meson
     config-opts:
@@ -40,56 +41,54 @@ modules:
       - -Ddocbook_docs=disabled
     sources:
       - type: archive
-        url: https://download.gnome.org/sources/libnotify/0.7/libnotify-0.7.9.tar.xz
-        sha256: 66c0517ed16df7af258e83208faaf5069727dfd66995c4bbc51c16954d674761
-      - type: git
-        url: https://git.almalinux.org/rpms/libnotify.git
-        commit: 09f965f6c29f145799b5da9209fc8c0d617e93ac
-        dest: rpms/libnotify
-        tag: imports/c9/libnotify-0.7.9-8.el9
+        url: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_0.8.1.orig.tar.xz
+        sha256: d033e6d4d6ccbf46a436c31628a4b661b36dca1f5d4174fe0173e274f4e62557
         x-checker-data:
-          type: git
-          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
-      - type: shell
-        commands:
-          - cat rpms/libnotify/SOURCES/*.patch | patch -Np1 -d .
+          type: html
+          url: https://packages.debian.org/source/bookworm/libnotify
+          version-pattern: libnotify \((\d+\.\d+\.\d+)
+          url-template: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_$version.orig.tar.xz
       - type: archive
-        url: https://download.gnome.org/sources/gnome-common/3.18/gnome-common-3.18.0.tar.xz
-        sha256: 22569e370ae755e04527b76328befc4c73b62bfd4a572499fde116b8318af8cf
-      - type: git
-        url: https://git.almalinux.org/rpms/gnome-common.git
-        commit: 7a908ec84bff1f72a26df6660808a76785ab081b
-        dest: rpms/gnome-common
-        tag: imports/c9/gnome-common-3.18.0-13.el9
+        url: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_0.8.1-1.debian.tar.xz
+        sha256: 0178ec7e19553fc5ac0cd829e1c6e75f8354b1708fd7966ad0798467499bf65a
+        dest: debs
         x-checker-data:
-          type: git
-          tag-pattern: ^[a-z]+\/[a|c]9\/gnome-common-(\d.+)$
+          type: html
+          url: https://packages.debian.org/source/bookworm/libnotify
+          version-pattern: libnotify \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_$version.debian.tar.xz
       - type: shell
         commands:
-          - cat rpms/gnome-common/SOURCES/*.patch | patch -Np1 -d .
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: boost
     buildsystem: simple
     build-commands:
+      - cd tools/build && bison -y -d -o src/engine/jamgram.cpp src/engine/jamgram.y
       - ./bootstrap.sh --prefix=$FLATPAK_DEST --with-libraries=locale,log,program_options,system,thread
-      - ./b2 install variant=release link=shared runtime-link=shared -j $FLATPAK_BUILDER_N_JOBS
+      - ./b2 install variant=release link=shared runtime-link=shared cxxflags="$CXXFLAGS" linkflags="$LDFLAGS"
+        -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://boostorg.jfrog.io/artifactory/main/release/1.75.0/source/boost_1_75_0.tar.gz
-        sha256: aeb26f80e80945e82ee93e5939baebdca47b9dee80a07d3144be1e1a6a66dd6a
-      - type: git
-        url: https://git.almalinux.org/rpms/boost.git
-        commit: 41091bbb1ce8d3f4d3a68b1251ee59aed2fc6652
-        dest: rpms
-        tag: imports/c9/boost-1.75.0-8.el9
+        url: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_1.81.0.orig.tar.xz
+        sha256: 449afecf5ef98edc0a46826cde6af98d1fb95c2e92962fa8c9e3eb1e8a2928ec
         x-checker-data:
-          type: git
-          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+          type: html
+          url: https://packages.debian.org/source/bookworm/boost1.81
+          version-pattern: boost1.81 \((\d+\.\d+\.\d+)
+          url-template: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_$version.orig.tar.xz
+      - type: archive
+        url: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_1.81.0-5+deb12u1.debian.tar.xz
+        sha256: 22351ebdc0e9dd4eee4ffa3b3a1075b5f7bf2b28e592dd2790e612264bfeb07e
+        dest: debs
+        x-checker-data:
+          type: html
+          url: https://packages.debian.org/source/bookworm/boost1.81
+          version-pattern: boost1.81 \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_$version.debian.tar.xz
       - type: shell
         commands:
-          - patch -Np0 -i rpms/SOURCES/boost-1.58.0-pool.patch -d .
-          - rm rpms/SOURCES/boost-1.58.0-pool.patch
-          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: avahi
     cleanup:
@@ -121,19 +120,25 @@ modules:
       - --disable-libevent
     sources:
       - type: archive
-        url: http://avahi.org/download/avahi-0.8.tar.gz
+        url: https://deb.debian.org/debian/pool/main/a/avahi/avahi_0.8.orig.tar.gz
         sha256: 060309d7a333d38d951bc27598c677af1796934dbd98e1024e7ad8de798fedda
-      - type: git
-        url: https://git.almalinux.org/rpms/avahi.git
-        commit: 96604f7fe549f6ef55216f15b612633adac74708
-        dest: rpms
-        tag: imports/c9/avahi-0.8-15.el9
         x-checker-data:
-          type: git
-          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+          type: html
+          url: https://packages.debian.org/source/bookworm/avahi
+          version-pattern: avahi \((\d+\.\d+)
+          url-template: https://deb.debian.org/debian/pool/main/a/avahi/avahi_$version.orig.tar.gz
+      - type: archive
+        url: https://deb.debian.org/debian/pool/main/a/avahi/avahi_0.8-10.debian.tar.xz
+        sha256: fdb83a68eae0d59d37ded3bc05350ff92d9dc0b6d312493b159af3025dd5520b
+        dest: debs
+        x-checker-data:
+          type: html
+          url: https://packages.debian.org/source/bookworm/avahi
+          version-pattern: avahi \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/a/avahi/avahi_$version.debian.tar.xz
       - type: shell
         commands:
-          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
           - autoreconf -ivf
 
   - name: libevdev
@@ -145,19 +150,25 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://www.freedesktop.org/software/libevdev/libevdev-1.11.0.tar.xz
-        sha256: 63f4ea1489858a109080e0b40bd43e4e0903a1e12ea888d581db8c495747c2d0
-      - type: git
-        url: https://git.almalinux.org/rpms/libevdev.git
-        commit: e7922fef0d494ed7bbbebb175dc64280c0c5d570
-        dest: rpms
-        tag: imports/c9/libevdev-1.11.0-3.el9
+        url: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_1.13.0+dfsg.orig.tar.xz
+        sha256: a882e13ef1dd6bd227318080cabf60fe5af3c06471259d3acfc9dbfb202351a7
         x-checker-data:
-          type: git
-          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+          type: html
+          url: https://packages.debian.org/source/bookworm/libevdev
+          version-pattern: libevdev \((\d+\.\d+\.\d+)
+          url-template: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_$version+dfsg.orig.tar.xz
+      - type: archive
+        url: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_1.13.0+dfsg-1.debian.tar.xz
+        sha256: d33c56acbbfff2dc540e45c57a38d92210b5e7fd0947ac47fbe48183468aad74
+        dest: debs
+        x-checker-data:
+          type: html
+          url: https://packages.debian.org/source/bookworm/libevdev
+          version-pattern: libevdev \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_$version.debian.tar.xz
       - type: shell
         commands:
-          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: numactl
     buildsystem: autotools
@@ -165,36 +176,68 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://github.com/numactl/numactl/archive/refs/tags/v2.0.16.tar.gz
+        url: https://deb.debian.org/debian/pool/main/n/numactl/numactl_2.0.16.orig.tar.gz
         sha256: a35c3bdb3efab5c65927e0de5703227760b1101f5e27ab741d8f32b3d5f0a44c
-      - type: git
-        url: https://git.almalinux.org/rpms/numactl.git
-        commit: 1c313dcb45a9c37be1520a9306329cf6df389017
-        dest: rpms
-        tag: imports/c9/numactl-2.0.16-1.el9
         x-checker-data:
-          type: git
-          tag-pattern: ^[a-z]+\/[a|c]9\/[a-z]+-(\d.+)$
+          type: html
+          url: https://packages.debian.org/source/bookworm/numactl
+          version-pattern: numactl \((\d+\.\d+\.\d+)
+          url-template: https://deb.debian.org/debian/pool/main/n/numactl/numactl_$version.orig.tar.gz
+      - type: archive
+        url: https://deb.debian.org/debian/pool/main/n/numactl/numactl_2.0.16-1.debian.tar.xz
+        sha256: 3e55d97df079693a12b92462ef9526bd305ff22e55ecbd6e37e37049e41b0a2c
+        dest: debs
+        x-checker-data:
+          type: html
+          url: https://packages.debian.org/source/bookworm/numactl
+          version-pattern: numactl \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/n/numactl/numactl_$version.debian.tar.xz
       - type: shell
         commands:
-          - cat rpms/SOURCES/*.patch | patch -Np1 -d .
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: xrandr
+    subdir: xrandr
     sources:
       - type: archive
-        url: https://www.x.org/archive/individual/app/xrandr-1.5.0.tar.gz
-        sha256: ddfe8e7866149c24ccce8e6aaa0623218ae19130c2859cadcaa4228d8bb4a46d
-      - type: git
-        url: https://git.almalinux.org/rpms/xorg-x11-server-utils.git
-        commit: f876202a0e0352230dd08f27e59d5637f4301339
-        dest: rpms
-        tag: imports/c9/xorg-x11-server-utils-7.7-44.el9
+        url: https://deb.debian.org/debian/pool/main/x/x11-xserver-utils/x11-xserver-utils_7.7+9.tar.gz
+        sha256: 307d5c4c7e7d638853720a698fad236bc97cbb088deed0aec8dab57bf65bb6d3
         x-checker-data:
-          type: git
-          tag-pattern: ^[a-z]+\/[a|c]9\/xorg-x11-server-utils-[0-9].[0-9]-(\d.+)$
+          type: html
+          url: https://packages.debian.org/source/bookworm/x11-xserver-utils
+          version-pattern: x11-xserver-utils \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/x/x11-xserver-utils/x11-xserver-utils_$version.tar.gz
       - type: shell
         commands:
-          - cat rpms/SOURCES/*xrandr*.patch | patch -Np1 -d .
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debian/patches/$p" -d .; fi; done
+
+  - name: miniupnpc
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DUPNPC_BUILD_SAMPLE=OFF
+      - -DUPNPC_BUILD_SHARED=ON
+      - -DUPNPC_BUILD_TESTS=OFF
+    sources:
+      - type: archive
+        url: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_2.2.4.orig.tar.gz
+        sha256: 481a5e4aede64e9ef29895b218836c3608d973e77a35b4f228ab1f3629412c4b
+        x-checker-data:
+          type: html
+          url: https://packages.debian.org/source/bookworm/miniupnpc
+          version-pattern: miniupnpc \((\d+\.\d+\.\d+)
+          url-template: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_$version.orig.tar.gz
+      - type: archive
+        url: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_2.2.4-1.debian.tar.xz
+        sha256: 11d03ebc88e5f8eb0486b40dd8015e2006d52c5c4bd3e7c5097bfb1d395fffa5
+        dest: debs
+        x-checker-data:
+          type: html
+          url: https://packages.debian.org/source/bookworm/miniupnpc
+          version-pattern: miniupnpc \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_$version.debian.tar.xz
+      - type: shell
+        commands:
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: intel-mediasdk
     only-arches:
@@ -206,32 +249,25 @@ modules:
       - -DENABLE_X11=OFF
     sources:
       - type: archive
-        url: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-23.2.2.tar.gz
-        sha256: 12f23a78104edc1c9bfa755effd2723866d107ad752f72d3839fcc8db0503cec
+        url: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_22.5.4.orig.tar.gz
+        sha256: 0eb04409a226da6e752576d60c46a3ec969ddfe03042897088367392207c7ab3
         x-checker-data:
-          type: anitya
-          project-id: 21814
-          stable-only: true
-          url-template: https://github.com/Intel-Media-SDK/MediaSDK/archive/refs/tags/intel-mediasdk-$version.tar.gz
-
-  - name: miniupnpc
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DUPNPC_BUILD_SAMPLE=OFF
-      - -DUPNPC_BUILD_SHARED=ON
-      - -DUPNPC_BUILD_TESTS=OFF
-    sources:
+          type: html
+          url: https://packages.debian.org/source/bookworm/intel-mediasdk
+          version-pattern: intel-mediasdk \((\d+\.\d+\.\d+)
+          url-template: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_$version.orig.tar.gz
       - type: archive
-        url: https://miniupnp.tuxfamily.org/files/miniupnpc-2.2.4.tar.gz
-        sha256: 481a5e4aede64e9ef29895b218836c3608d973e77a35b4f228ab1f3629412c4b
-      - type: git
-        url: https://src.fedoraproject.org/rpms/miniupnpc.git
-        commit: c59b323a182785d688c1f60531c4c2277c90a7d1
-        # miniupnpc-2.2.4-2.el9
-        dest: rpms
+        url: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_22.5.4-1.debian.tar.xz
+        sha256: f6c308ec1f7e53f349941acf10d2cd0d16a2a6f5bef2da74a87003c680b6efb4
+        dest: debs
+        x-checker-data:
+          type: html
+          url: https://packages.debian.org/source/bookworm/intel-mediasdk
+          version-pattern: intel-mediasdk \(([^\)]+)\)
+          url-template: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_$version.debian.tar.xz
       - type: shell
         commands:
-          - cat rpms/*.patch | patch -Np2 -d .
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: cuda
     build-options:
@@ -243,6 +279,7 @@ modules:
       - chmod u+x ./cuda.run
       - ./cuda.run --silent --toolkit --toolkitpath=$FLATPAK_DEST/cuda --no-opengl-libs
         --no-man-page --no-drm --tmpdir=$FLATPAK_BUILDER_BUILDDIR
+      - rm -r $FLATPAK_DEST/cuda/nsight-systems-*
       - rm ./cuda.run
     sources:
       - type: file
@@ -259,7 +296,7 @@ modules:
         dest-filename: cuda.run
 
   - name: sunshine
-    buildsystem: cmake
+    buildsystem: cmake-ninja
     builddir: true
     build-options:
       append-path: /usr/lib/sdk/node18/bin:/usr/lib/sdk/llvm14/bin
