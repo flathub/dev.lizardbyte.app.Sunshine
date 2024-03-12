@@ -240,6 +240,7 @@ modules:
           - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: intel-mediasdk
+    disabled: true
     only-arches:
       - x86_64
     buildsystem: cmake-ninja
@@ -270,6 +271,7 @@ modules:
           - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: cuda
+    disabled: true
     build-options:
       no-debuginfo: true
     buildsystem: simple
