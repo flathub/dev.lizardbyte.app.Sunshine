@@ -271,7 +271,6 @@ modules:
           - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: cuda
-    disabled: true
     build-options:
       no-debuginfo: true
     buildsystem: simple
@@ -280,7 +279,7 @@ modules:
     build-commands:
       - chmod u+x ./cuda.run
       - ./cuda.run --silent --toolkit --toolkitpath=$FLATPAK_DEST/cuda --no-opengl-libs
-        --no-man-page --no-drm --tmpdir=$FLATPAK_BUILDER_BUILDDIR
+        --no-man-page --no-drm --override --tmpdir=$FLATPAK_BUILDER_BUILDDIR
       - rm -r $FLATPAK_DEST/cuda/nsight-systems-*
       - rm ./cuda.run
     sources:
@@ -310,6 +309,8 @@ modules:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm15/bin/clang++
       - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
+      # - -DCUDA_NVCC_FLAGS=-allow-unsupported-compiler
+      - -DCMAKE_CUDA_FLAGS=-allow-unsupported-compiler
       - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
       - -DSUNSHINE_EXECUTABLE_PATH=flatpak run --command=sunshine dev.lizardbyte.app.Sunshine
