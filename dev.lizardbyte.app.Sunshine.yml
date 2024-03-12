@@ -1,11 +1,11 @@
 app-id: dev.lizardbyte.app.Sunshine
 runtime: org.freedesktop.Platform
-runtime-version: "22.08"
+runtime-version: "23.08"
 sdk: org.freedesktop.Sdk
 separate-locales: false
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node18
-  - org.freedesktop.Sdk.Extension.llvm14
+  - org.freedesktop.Sdk.Extension.llvm15
 command: dev.lizardbyte.app.Sunshine.sh
 
 finish-args:
@@ -299,14 +299,14 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      append-path: /usr/lib/sdk/node18/bin:/usr/lib/sdk/llvm14/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm14/lib
+      append-path: /usr/lib/sdk/node18/bin:/usr/lib/sdk/llvm15/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm15/lib
       env:
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
         npm_config_offline: "true"
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-      - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm14/bin/clang++
+      - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm15/bin/clang++
       - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
       - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
