@@ -5,7 +5,7 @@ sdk: org.freedesktop.Sdk
 separate-locales: false
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node20
-  - org.freedesktop.Sdk.Extension.llvm15
+  - org.freedesktop.Sdk.Extension.llvm17
 command: dev.lizardbyte.app.Sunshine.sh
 
 finish-args:
@@ -239,47 +239,10 @@ modules:
         commands:
           - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
 
-  - name: intel-mediasdk
-    only-arches:
-      - x86_64
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DBUILD_SAMPLES=OFF
-      - -DBUILD_TUTORIALS=OFF
-      - -DENABLE_X11=OFF
-    sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_22.5.4.orig.tar.gz
-        sha256: 0eb04409a226da6e752576d60c46a3ec969ddfe03042897088367392207c7ab3
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/intel-mediasdk
-          version-pattern: intel-mediasdk \((\d+\.\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_$version.orig.tar.gz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_22.5.4-1.debian.tar.xz
-        sha256: f6c308ec1f7e53f349941acf10d2cd0d16a2a6f5bef2da74a87003c680b6efb4
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/intel-mediasdk
-          version-pattern: intel-mediasdk \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_$version.debian.tar.xz
-      - type: file
-        url: https://src.fedoraproject.org/rpms/intel-mediasdk/raw/f38/f/intel-mediasdk-gcc13.patch
-        sha256: 56b9b09c13ac6529a6bacdfd2cb88c8130060a51adab02ed1d0ea1fc97029a56
-      - type: shell
-        commands:
-          - patch -Np1 -i intel-mediasdk-gcc13.patch -d .
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
-
   - name: cuda
     build-options:
       no-debuginfo: true
-      env:
-        CC: clang
-        CXX: clang++
-    buildsystem: simple     
+    buildsystem: simple
     cleanup:
       - "*"
     build-commands:
@@ -301,57 +264,26 @@ modules:
         url: https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux_sbsa.run
         sha256: e6e9a8d31163c9776b5e313fd7590877c5684e1ecddee741154f95704d4ed27c
         dest-filename: cuda.run
-    modules:
-      - name: llvm14
-        subdir: llvm
-        builddir: true
-        buildsystem: cmake-ninja
-        cleanup:
-          - "*"
-        build-options:
-          append-path: /usr/lib/sdk/llvm15/bin
-          prepend-ld-library-path: /usr/lib/sdk/llvm15/lib
-          no-debuginfo: true
-        config-opts:
-          - -DCMAKE_BUILD_TYPE=Release
-          - -DCMAKE_C_COMPILER=clang
-          - -DCMAKE_CXX_COMPILER=clang++
-          - -DLLVM_ENABLE_PROJECTS=clang
-          - -DLLVM_USE_LINKER=lld
-          - -DLLVM_TARGETS_TO_BUILD=host
-          - -DLLVM_BUILD_TOOLS=NO
-          - -DLLVM_INCLUDE_BENCHMARKS=OFF
-          - -DLLVM_INCLUDE_EXAMPLES=OFF
-          - -DLLVM_BUILD_DOCS=OFF
-          - -DLLVM_INCLUDE_DOCS=OFF
-          - -DLLVM_ENABLE_OCAMLDOC=OFF
-          - -DLLVM_ENABLE_SPHINX=OFF
-          - -DLLVM_ENABLE_DOXYGEN=OFF
-          - -DLLVM_ENABLE_BINDINGS=OFF
-        sources:
-          - type: archive
-            url: https://deb.debian.org/debian/pool/main/l/llvm-toolchain-14/llvm-toolchain-14_14.0.6.orig.tar.xz
-            sha256: d9bce5f42381d781e273c724db1ab0acd66259bf2782b79891664dbf1953d22c
-            x-checker-data:
-              type: html
-              url: https://packages.debian.org/source/bookworm/llvm-toolchain-14
-              version-pattern: llvm-toolchain-14 \(1:(\d+\.\d+\.\d+)
-              url-template: https://deb.debian.org/debian/pool/main/l/llvm-toolchain-14/llvm-toolchain-14_$version.orig.tar.xz
 
   - name: sunshine
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      append-path: /usr/lib/sdk/node20/bin
+      append-path: /usr/lib/sdk/node20/bin:/usr/lib/sdk/llvm17/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm17/lib
       env:
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
         npm_config_offline: "true"
-        # NVCC_APPEND_FLAGS: -allow-unsupported-compiler
+        CUDA_PATH: /app/cuda
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+      - -DCMAKE_C_COMPILER=clang
+      - -DCMAKE_CXX_COMPILER=clang++
+      - -DCMAKE_CUDA_COMPILER=clang++
       - -DCMAKE_CUDA_HOST_COMPILER=clang++
-      - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
-      - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+      - -DCMAKE_CUDA_FLAGS=-std=c++17
+      - -DCUDA_INHERIT_COMPILE_OPTIONS=OFF
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
       - -DSUNSHINE_EXECUTABLE_PATH=flatpak run --command=sunshine dev.lizardbyte.app.Sunshine
       - -DSUNSHINE_ENABLE_WAYLAND=ON
@@ -379,7 +311,11 @@ modules:
       - type: patch
         path: patches/spawn-host.patch
       - type: patch
-        path: patches/dir.patch
+        path: patches/config-dir.patch
+      - type: patch
+        path: patches/remove-mfx.patch
+      - type: patch
+        path: patches/force-cuda-arch.patch
       - type: file
         path: dev.lizardbyte.app.Sunshine.desktop
       - type: file
