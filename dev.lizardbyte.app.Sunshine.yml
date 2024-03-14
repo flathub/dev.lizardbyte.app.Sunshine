@@ -1,6 +1,6 @@
 app-id: dev.lizardbyte.app.Sunshine
 runtime: org.freedesktop.Platform
-runtime-version: "22.08"
+runtime-version: '22.08'
 sdk: org.freedesktop.Sdk
 separate-locales: false
 sdk-extensions:
@@ -59,15 +59,16 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_$version.debian.tar.xz
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: boost
     buildsystem: simple
     build-commands:
       - cd tools/build && bison -y -d -o src/engine/jamgram.cpp src/engine/jamgram.y
       - ./bootstrap.sh --prefix=$FLATPAK_DEST --with-libraries=locale,log,program_options,system,thread
-      - ./b2 install variant=release link=shared runtime-link=shared cxxflags="$CXXFLAGS" linkflags="$LDFLAGS"
-        -j $FLATPAK_BUILDER_N_JOBS
+      - ./b2 install variant=release link=shared runtime-link=shared cxxflags="$CXXFLAGS"
+        linkflags="$LDFLAGS" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
         url: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_1.81.0.orig.tar.xz
@@ -88,7 +89,8 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_$version.debian.tar.xz
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: avahi
     cleanup:
@@ -138,7 +140,8 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/a/avahi/avahi_$version.debian.tar.xz
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debs/patches/$p" -d .; fi; done
           - autoreconf -ivf
 
   - name: libevdev
@@ -168,7 +171,8 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_$version.debian.tar.xz
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: numactl
     buildsystem: autotools
@@ -194,7 +198,8 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/n/numactl/numactl_$version.debian.tar.xz
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: xrandr
     subdir: xrandr
@@ -209,7 +214,8 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/x/x11-xserver-utils/x11-xserver-utils_$version.tar.gz
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debian/patches/$p" -d .; fi; done
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debian/patches/$p" -d .; fi; done
 
   - name: miniupnpc
     buildsystem: cmake-ninja
@@ -237,7 +243,8 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_$version.debian.tar.xz
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: intel-mediasdk
     only-arches:
@@ -267,14 +274,15 @@ modules:
           url-template: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_$version.debian.tar.xz
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debs/patches/$p" -d .; fi; done
 
   - name: cuda
     build-options:
       no-debuginfo: true
     buildsystem: simple
     cleanup:
-      - "*"
+      - '*'
     build-commands:
       - chmod u+x ./cuda.run
       - ./cuda.run --silent --toolkit --toolkitpath=$FLATPAK_DEST/cuda --no-opengl-libs
@@ -303,7 +311,7 @@ modules:
       prepend-ld-library-path: /usr/lib/sdk/llvm14/lib
       env:
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
-        npm_config_offline: "true"
+        npm_config_offline: 'true'
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_CUDA_HOST_COMPILER=/usr/lib/sdk/llvm14/bin/clang++
@@ -326,8 +334,8 @@ modules:
       - npm-generated-sources.json
       - type: git
         url: https://github.com/LizardByte/Sunshine.git
-        commit: c63637f02f40a92999ba33eb96fffddce5073633
-        tag: v0.22.0
+        commit: 00fbbc94bc1b1b9eb5a0b87a41f9e941a23b5886
+        tag: v0.22.1
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
