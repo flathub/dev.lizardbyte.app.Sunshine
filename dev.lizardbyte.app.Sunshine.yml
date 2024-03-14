@@ -11,6 +11,7 @@ command: dev.lizardbyte.app.Sunshine.sh
 finish-args:
   - --device=all
   - --env=PULSE_PROP_media.category=Manager
+  - --env=SUNSHINE_MIGRATE_CONFIG=1
   - --filesystem=home
   - --share=ipc
   - --share=network
@@ -246,37 +247,6 @@ modules:
           - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
             -Np1 -i "debs/patches/$p" -d .; fi; done
 
-  - name: intel-mediasdk
-    only-arches:
-      - x86_64
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DBUILD_SAMPLES=OFF
-      - -DBUILD_TUTORIALS=OFF
-      - -DENABLE_X11=OFF
-    sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_22.5.4.orig.tar.gz
-        sha256: 0eb04409a226da6e752576d60c46a3ec969ddfe03042897088367392207c7ab3
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/intel-mediasdk
-          version-pattern: intel-mediasdk \((\d+\.\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_$version.orig.tar.gz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_22.5.4-1.debian.tar.xz
-        sha256: f6c308ec1f7e53f349941acf10d2cd0d16a2a6f5bef2da74a87003c680b6efb4
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/intel-mediasdk
-          version-pattern: intel-mediasdk \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/i/intel-mediasdk/intel-mediasdk_$version.debian.tar.xz
-      - type: shell
-        commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debs/patches/$p" -d .; fi; done
-
   - name: cuda
     build-options:
       no-debuginfo: true
@@ -344,7 +314,7 @@ modules:
       - type: patch
         path: patches/spawn-host.patch
       - type: patch
-        path: patches/dir.patch
+        path: patches/remove-mfx.patch
       - type: file
         path: dev.lizardbyte.app.Sunshine.desktop
       - type: file
