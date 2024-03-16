@@ -12,6 +12,7 @@ command: dev.lizardbyte.app.Sunshine.sh
 finish-args:
   - --device=all
   - --env=PULSE_PROP_media.category=Manager
+  - --env=SUNSHINE_MIGRATE_CONFIG=1
   - --filesystem=home
   - --share=ipc
   - --share=network
@@ -327,8 +328,6 @@ modules:
         path: patches/ExecStop.patch
       - type: patch
         path: patches/spawn-host.patch
-      - type: patch
-        path: patches/config-dir.patch
       - type: patch
         path: patches/remove-mfx.patch
       - type: patch
