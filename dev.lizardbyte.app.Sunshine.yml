@@ -276,7 +276,7 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      append-path: /usr/lib/sdk/node20/bin:/usr/lib/sdk/llvm17/bin
+      append-path: /usr/lib/sdk/node20/bin:/app/cuda/bin:/usr/lib/sdk/llvm17/bin
       prepend-ld-library-path: /usr/lib/sdk/llvm17/lib
       env:
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
