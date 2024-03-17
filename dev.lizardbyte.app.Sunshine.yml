@@ -3,7 +3,7 @@ runtime: org.freedesktop.Platform
 runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
 separate-locales: false
-writable-sdk: true # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
+# writable-sdk: true # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node20
   - org.freedesktop.Sdk.Extension.llvm17
@@ -258,20 +258,20 @@ modules:
       - chmod u+x ./cuda.run
       - ./cuda.run --silent --toolkit --toolkitpath=$FLATPAK_DEST/cuda --no-opengl-libs
         --no-man-page --no-drm --override --tmpdir=$FLATPAK_BUILDER_BUILDDIR
-      - rm -r $FLATPAK_DEST/cuda/nsight-systems-*
+      # - rm -r $FLATPAK_DEST/cuda/nsight-systems-*
       - rm ./cuda.run
     sources:
       - type: file
         only-arches:
           - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux.run
-        sha256: 9223c4af3aebe4a7bbed9abd9b163b03a1b34b855fbc2b4a0d1b706ac09a5a16
+        url: https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda_12.1.1_530.30.02_linux.run
+        sha256: d74022d41d80105319dfa21beea39b77a5b9919539c0487a05caaf2446d6a70e
         dest-filename: cuda.run
       - type: file
         only-arches:
           - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda_11.8.0_520.61.05_linux_sbsa.run
-        sha256: e6e9a8d31163c9776b5e313fd7590877c5684e1ecddee741154f95704d4ed27c
+        url: https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda_12.1.1_530.30.02_linux_sbsa.run
+        sha256: 45ea4cd860f0a26d3db8ce032530f2ee0b55abdd587545213d395a73623b4278
         dest-filename: cuda.run
 
   - name: sunshine
@@ -312,26 +312,26 @@ modules:
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
-      - type: file
+      # - type: file
         # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
-        only-arches:
-          - aarch64
-        url: https://raw.githubusercontent.com/NixOS/nixpkgs/2b47345ff54be47f71000722aafaf3d0a124c35c/pkgs/development/libraries/glibc/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
-        sha256: 35f06b79d3fd4439b3d3d0915160101bb2df5a334f8b173ca2d9463142652fa8
-        dest: patches
-      - type: shell
-        only-arches:
-          - aarch64
-        commands:
-          - patch /usr/include/aarch64-linux-gnu/bits/math-vector.h patches/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
+      #   only-arches:
+      #     - aarch64
+      #   url: https://raw.githubusercontent.com/NixOS/nixpkgs/2b47345ff54be47f71000722aafaf3d0a124c35c/pkgs/development/libraries/glibc/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
+      #   sha256: 35f06b79d3fd4439b3d3d0915160101bb2df5a334f8b173ca2d9463142652fa8
+      #   dest: patches
+      # - type: shell
+      #   only-arches:
+      #     - aarch64
+      #   commands:
+      #     - patch /usr/include/aarch64-linux-gnu/bits/math-vector.h patches/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
       - type: patch
         path: patches/ExecStop.patch
       - type: patch
         path: patches/spawn-host.patch
       - type: patch
         path: patches/remove-mfx.patch
-      - type: patch
-        path: patches/force-cuda-arch.patch
+      # - type: patch
+      #   path: patches/force-cuda-arch.patch
       - type: file
         path: dev.lizardbyte.app.Sunshine.desktop
       - type: file
