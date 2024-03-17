@@ -313,7 +313,7 @@ modules:
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
-      - type: file
+      # - type: file
         # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
       #   only-arches:
       #     - aarch64
