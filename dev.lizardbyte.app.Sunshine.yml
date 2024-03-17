@@ -5,6 +5,7 @@ sdk: org.freedesktop.Sdk
 separate-locales: false
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node20
+  - org.freedesktop.Sdk.Extension.llvm17
 command: dev.lizardbyte.app.Sunshine.sh
 
 finish-args:
@@ -284,7 +285,11 @@ modules:
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
-      # For Clang CUDA build
+      # For Clang++ as CUDA host
+      - -DCMAKE_CUDA_HOST_COMPILER=clang++
+      - -DCMAKE_CUDA_COMPILER=nvcc
+      # - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+      # For Clang++ as CUDA Compiler
       # - -DCMAKE_CUDA_COMPILER=clang++
       # - -DCMAKE_CUDA_FLAGS=-std=c++17
       # - -DCUDA_INHERIT_COMPILE_OPTIONS=OFF
