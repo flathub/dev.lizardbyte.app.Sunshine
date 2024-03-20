@@ -3,7 +3,7 @@
   <id>dev.lizardbyte.app.Sunshine</id>
 
   <name>Sunshine</name>
-  <summary>Remote game host for Moonlight</summary>
+  <summary>Self-hosted game stream host for Moonlight</summary>
 
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-only</project_license>
