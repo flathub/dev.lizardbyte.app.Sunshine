@@ -41,27 +41,19 @@ modules:
       - -Dgtk_doc=false
       - -Ddocbook_docs=disabled
     sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_0.8.1.orig.tar.xz
-        sha256: d033e6d4d6ccbf46a436c31628a4b661b36dca1f5d4174fe0173e274f4e62557
+      - type: git
+        url: https://salsa.debian.org/gnome-team/libnotify.git
+        commit: ccf2f62ef0a4b264dd4eff32cab70a3e213ceb1a
+        tag: debian/0.8.1-1
         x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/libnotify
-          version-pattern: libnotify \((\d+\.\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_$version.orig.tar.xz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_0.8.1-1.debian.tar.xz
-        sha256: 0178ec7e19553fc5ac0cd829e1c6e75f8354b1708fd7966ad0798467499bf65a
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/libnotify
-          version-pattern: libnotify \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/libn/libnotify/libnotify_$version.debian.tar.xz
+          type: git
+          tag-pattern: ^debian\/(\d.+)$
+          versions:
+            <: '0.8.2'
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debian/patches/$p" -d .; fi; done
 
   - name: boost
     buildsystem: simple
@@ -72,26 +64,21 @@ modules:
         linkflags="$LDFLAGS" -j $FLATPAK_BUILDER_N_JOBS
     sources:
       - type: archive
-        url: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_1.81.0.orig.tar.xz
-        sha256: 449afecf5ef98edc0a46826cde6af98d1fb95c2e92962fa8c9e3eb1e8a2928ec
+        url: https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.gz
+        sha256: 205666dea9f6a7cfed87c7a6dfbeb52a2c1b9de55712c9c1a87735d7181452b6
+      - type: git
+        url: https://salsa.debian.org/debian/boost.git
+        commit: b940346476993b6dfd2b8a64c95762829117850e
+        tag: debian/1.81.0-7
         x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/boost1.81
-          version-pattern: boost1.81 \((\d+\.\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_$version.orig.tar.xz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_1.81.0-5+deb12u1.debian.tar.xz
-        sha256: 22351ebdc0e9dd4eee4ffa3b3a1075b5f7bf2b28e592dd2790e612264bfeb07e
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/boost1.81
-          version-pattern: boost1.81 \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/b/boost1.81/boost1.81_$version.debian.tar.xz
+          type: git
+          tag-pattern: ^debian\/(\d.+)$
+          versions:
+            <: '1.82.0'
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debian/patches/$p" -d .; fi; done
 
   - name: avahi
     cleanup:
@@ -122,27 +109,19 @@ modules:
       - --disable-xmltoman
       - --disable-libevent
     sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/a/avahi/avahi_0.8.orig.tar.gz
-        sha256: 060309d7a333d38d951bc27598c677af1796934dbd98e1024e7ad8de798fedda
+      - type: git
+        url: https://salsa.debian.org/utopia-team/avahi.git
+        commit: 1412c015d348166d58ea9c192239b00769eae24e
+        tag: debian/0.8-13
         x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/avahi
-          version-pattern: avahi \((\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/a/avahi/avahi_$version.orig.tar.gz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/a/avahi/avahi_0.8-10.debian.tar.xz
-        sha256: fdb83a68eae0d59d37ded3bc05350ff92d9dc0b6d312493b159af3025dd5520b
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/avahi
-          version-pattern: avahi \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/a/avahi/avahi_$version.debian.tar.xz
+          type: git
+          tag-pattern: ^debian\/(\d.+)$
+          versions:
+            <: '0.9'
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debian/patches/$p" -d .; fi; done
           - autoreconf -ivf
 
   - name: libevdev
@@ -153,66 +132,51 @@ modules:
     cleanup:
       - /bin
     sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_1.13.0+dfsg.orig.tar.xz
-        sha256: a882e13ef1dd6bd227318080cabf60fe5af3c06471259d3acfc9dbfb202351a7
+      - type: git
+        url: https://salsa.debian.org/debian/libevdev.git
+        commit: 1aa7baa233d6df4cee6a66fbc61bb5ffc8b6e88d
+        tag: debian/1.13.0+dfsg-1
         x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/libevdev
-          version-pattern: libevdev \((\d+\.\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_$version+dfsg.orig.tar.xz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_1.13.0+dfsg-1.debian.tar.xz
-        sha256: d33c56acbbfff2dc540e45c57a38d92210b5e7fd0947ac47fbe48183468aad74
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/libevdev
-          version-pattern: libevdev \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/libe/libevdev/libevdev_$version.debian.tar.xz
+          type: git
+          tag-pattern: ^debian\/(\d.\d+\.\d+)
+          versions:
+            <: '1.13.1'
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debian/patches/$p" -d .; fi; done
 
   - name: numactl
     buildsystem: autotools
     cleanup:
       - /bin
     sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/n/numactl/numactl_2.0.16.orig.tar.gz
-        sha256: a35c3bdb3efab5c65927e0de5703227760b1101f5e27ab741d8f32b3d5f0a44c
+      - type: git
+        url: https://salsa.debian.org/debian/numactl.git
+        commit: 640bb34497702f9aaeb8af1b491f32b91d03ec80
+        tag: debian/2.0.16-1
         x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/numactl
-          version-pattern: numactl \((\d+\.\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/n/numactl/numactl_$version.orig.tar.gz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/n/numactl/numactl_2.0.16-1.debian.tar.xz
-        sha256: 3e55d97df079693a12b92462ef9526bd305ff22e55ecbd6e37e37049e41b0a2c
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/numactl
-          version-pattern: numactl \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/n/numactl/numactl_$version.debian.tar.xz
+          type: git
+          tag-pattern: ^debian\/(\d.+)$
+          versions:
+            <: '2.0.17'
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debian/patches/$p" -d .; fi; done
 
   - name: xrandr
     subdir: xrandr
     sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/x/x11-xserver-utils/x11-xserver-utils_7.7+9.tar.gz
-        sha256: 307d5c4c7e7d638853720a698fad236bc97cbb088deed0aec8dab57bf65bb6d3
+      - type: git
+        url: https://salsa.debian.org/xorg-team/app/x11-xserver-utils.git
+        commit: a3ecab8b1b8b24faf1a3a4237258d608022f7a31
+        tag: x11-xserver-utils-7.7+10
         x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/x11-xserver-utils
-          version-pattern: x11-xserver-utils \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/x/x11-xserver-utils/x11-xserver-utils_$version.tar.gz
+          type: git
+          tag-pattern: ^x11-xserver-utils-(\d+\.\d+\+\d+)$
+          versions:
+            <: '7.8'
       - type: shell
         commands:
           - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
@@ -225,27 +189,19 @@ modules:
       - -DUPNPC_BUILD_SHARED=ON
       - -DUPNPC_BUILD_TESTS=OFF
     sources:
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_2.2.4.orig.tar.gz
-        sha256: 481a5e4aede64e9ef29895b218836c3608d973e77a35b4f228ab1f3629412c4b
+      - type: git
+        url: https://salsa.debian.org/miniupnp-team/miniupnpc.git
+        commit: c5fe3aa794e92a503cecec6a4071eb6d310b4e42
+        tag: debian/2.2.4-1
         x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/miniupnpc
-          version-pattern: miniupnpc \((\d+\.\d+\.\d+)
-          url-template: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_$version.orig.tar.gz
-      - type: archive
-        url: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_2.2.4-1.debian.tar.xz
-        sha256: 11d03ebc88e5f8eb0486b40dd8015e2006d52c5c4bd3e7c5097bfb1d395fffa5
-        dest: debs
-        x-checker-data:
-          type: html
-          url: https://packages.debian.org/source/bookworm/miniupnpc
-          version-pattern: miniupnpc \(([^\)]+)\)
-          url-template: https://deb.debian.org/debian/pool/main/m/miniupnpc/miniupnpc_$version.debian.tar.xz
+          type: git
+          tag-pattern: ^debian\/(\d.+)$
+          versions:
+            <: '2.2.5'
       - type: shell
         commands:
-          - for p in $(cat debs/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debs/patches/$p" -d .; fi; done
+          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
+            -Np1 -i "debian/patches/$p" -d .; fi; done
 
   - name: cuda
     build-options:
