@@ -273,11 +273,10 @@ modules:
           type: git
           tag-pattern: ^v([\d.]+)$
       - type: patch
-        path: patches/ExecStop.patch
-      - type: patch
-        path: patches/spawn-host.patch
-      - type: patch
-        path: patches/remove-mfx.patch
+        paths:
+          - patches/ExecStop.patch
+          - patches/spawn-host.patch
+          - patches/remove-mfx.patch
       - type: file
         path: dev.lizardbyte.app.Sunshine.desktop
       - type: file
