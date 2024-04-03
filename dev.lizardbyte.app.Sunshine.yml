@@ -15,9 +15,9 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=pulseaudio
-  # - --socket=wayland
-  - --socket=x11
+  - --socket=wayland
   - --system-talk-name=org.freedesktop.Avahi
   # - --talk-name=org.freedesktop.Flatpak
 
