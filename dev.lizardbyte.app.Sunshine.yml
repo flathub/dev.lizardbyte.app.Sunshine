@@ -48,10 +48,11 @@ modules:
         dest-filename: apply-patches.sh
 
   - name: mold
+    build-options:
+      no-debuginfo: true
     buildsystem: simple
     build-commands:
-      - install -m 755 bin/mold $FLATPAK_DEST/bin/mold
-      - install -m 755 bin/ld.mold $FLATPAK_DEST/bin/ld.mold
+      - cp -r ./* $FLATPAK_DEST
     cleanup:
       - '*'
     sources:
@@ -83,6 +84,7 @@ modules:
     cleanup:
       - '*'
     build-commands:
+      - rm ./*/LICENSE
       - mkdir -p $FLATPAK_DEST/cuda
       - cp -r cuda_nvcc/* $FLATPAK_DEST/cuda
       - cp -r cuda_cudart/* $FLATPAK_DEST/cuda
@@ -91,26 +93,26 @@ modules:
       - type: archive
         only-arches:
           - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-x86_64/cuda_nvcc-linux-x86_64-12.4.99-archive.tar.xz
-        sha256: 9ec3199cb6e8ec2a3b3336bf120690e534aee8ab5ddc3ca51e0a01aad9494f48
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-x86_64/cuda_nvcc-linux-x86_64-12.4.131-archive.tar.xz
+        sha256: 7ffba1ada0e4b8c17e451ac7a60d386aa2642ecd08d71202a0b100c98bd74681
         dest: cuda_nvcc
       - type: archive
         only-arches:
           - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-x86_64/cuda_cudart-linux-x86_64-12.4.99-archive.tar.xz
-        sha256: dc126fb171d996c495756d44d565f7dd927245cbdc7191b9f8d5075d09ada699
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-x86_64/cuda_cudart-linux-x86_64-12.4.127-archive.tar.xz
+        sha256: 0483bff9a36e7a44465db3cd42874f6f70f019297dcf803fbefcbf58d7448c8f
         dest: cuda_cudart
       - type: archive
         only-arches:
           - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-sbsa/cuda_nvcc-linux-sbsa-12.4.99-archive.tar.xz
-        sha256: cc31691a8af2a5ae27576a4f20366f38f388c6182389fa162c8bc91a7d47aa0d
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-sbsa/cuda_nvcc-linux-sbsa-12.4.131-archive.tar.xz
+        sha256: 83f130dab0325e12b90fdf1279c0cbbd88acf638ef0a7e0cad72d50855a4f44a
         dest: cuda_nvcc
       - type: archive
         only-arches:
           - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-sbsa/cuda_cudart-linux-sbsa-12.4.99-archive.tar.xz
-        sha256: 5bb3b037be5c175679f9de8469f8701ccff48014c9fb3d7310d6cc5fbc57cc0b
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-sbsa/cuda_cudart-linux-sbsa-12.4.127-archive.tar.xz
+        sha256: fb96abcff3544384440b9259f9aeab9bf222a5775348546ef87c68ee02eee379
         dest: cuda_cudart
 
   # Runtime time modules
