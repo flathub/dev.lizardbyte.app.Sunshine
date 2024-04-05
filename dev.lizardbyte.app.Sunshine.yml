@@ -119,7 +119,7 @@ modules:
       - type: archive
         only-arches:
           - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-sbsa/cuda_cudart-linux-sbsa-11.8.89-archive.tar.x
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-sbsa/cuda_cudart-linux-sbsa-11.8.89-archive.tar.xz
         sha256: 88f496a2f96f5bb2a9cb351e6704dfe6a45e713e571c958a3924b2a02e7adea0
         dest: cuda_cudart
       - type: archive
