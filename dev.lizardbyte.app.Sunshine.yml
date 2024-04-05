@@ -15,9 +15,9 @@ finish-args:
   - --filesystem=home
   - --share=ipc
   - --share=network
+  - --socket=fallback-x11
   - --socket=pulseaudio
-  # - --socket=wayland
-  - --socket=x11
+  - --socket=wayland
   - --system-talk-name=org.freedesktop.Avahi
   # - --talk-name=org.freedesktop.Flatpak
 
@@ -29,7 +29,93 @@ cleanup:
   - /lib/*.a
   - /share/man
 
+build-options:
+  ldflags: -fuse-ld=mold
+
 modules:
+  # Build time modules
+  - name: apply-patches
+    buildsystem: simple
+    build-commands:
+      - install -D apply-patches.sh $FLATPAK_DEST/bin/apply-patches.sh
+    cleanup:
+      - '*'
+    sources:
+      - type: inline
+        contents: |
+          for p in $(cat debian/patches/series); do if [[ $p != "#"* ]];
+          then patch -Np1 -i "debian/patches/$p" -d .; fi; done
+        dest-filename: apply-patches.sh
+
+  - name: mold
+    build-options:
+      no-debuginfo: true
+    buildsystem: simple
+    build-commands:
+      - cp -r ./* $FLATPAK_DEST
+    cleanup:
+      - '*'
+    sources:
+      - type: archive
+        only-arches:
+          - x86_64
+        url: https://github.com/rui314/mold/releases/download/v2.30.0/mold-2.30.0-x86_64-linux.tar.gz
+        sha256: 977e6a123f9c7a45c73f84cd47fc7d4113fb39471d0de7a751ee39350888ac93
+        x-checker-data:
+          type: anitya
+          project-id: 241732
+          stable-only: true
+          url-template: https://github.com/rui314/mold/releases/download/v$version/mold-$version-x86_64-linux.tar.gz
+      - type: archive
+        only-arches:
+          - aarch64
+        url: https://github.com/rui314/mold/releases/download/v2.30.0/mold-2.30.0-aarch64-linux.tar.gz
+        sha256: 258aaf2b7808ea22fca625480efdf7a13830e9ee311716db0ba9c62af1770c07
+        x-checker-data:
+          type: anitya
+          project-id: 241732
+          stable-only: true
+          url-template: https://github.com/rui314/mold/releases/download/v$version/mold-$version-aarch64-linux.tar.gz
+
+  - name: cuda
+    build-options:
+      no-debuginfo: true
+    buildsystem: simple
+    cleanup:
+      - '*'
+    build-commands:
+      - rm ./*/LICENSE
+      - mkdir -p $FLATPAK_DEST/cuda
+      - cp -r cuda_nvcc/* $FLATPAK_DEST/cuda
+      - cp -r cuda_cudart/* $FLATPAK_DEST/cuda
+      - mv $FLATPAK_DEST/cuda/lib $FLATPAK_DEST/cuda/lib64
+    sources:
+      - type: archive
+        only-arches:
+          - x86_64
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-x86_64/cuda_nvcc-linux-x86_64-12.4.131-archive.tar.xz
+        sha256: 7ffba1ada0e4b8c17e451ac7a60d386aa2642ecd08d71202a0b100c98bd74681
+        dest: cuda_nvcc
+      - type: archive
+        only-arches:
+          - x86_64
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-x86_64/cuda_cudart-linux-x86_64-12.4.127-archive.tar.xz
+        sha256: 0483bff9a36e7a44465db3cd42874f6f70f019297dcf803fbefcbf58d7448c8f
+        dest: cuda_cudart
+      - type: archive
+        only-arches:
+          - aarch64
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-sbsa/cuda_nvcc-linux-sbsa-12.4.131-archive.tar.xz
+        sha256: 83f130dab0325e12b90fdf1279c0cbbd88acf638ef0a7e0cad72d50855a4f44a
+        dest: cuda_nvcc
+      - type: archive
+        only-arches:
+          - aarch64
+        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-sbsa/cuda_cudart-linux-sbsa-12.4.127-archive.tar.xz
+        sha256: fb96abcff3544384440b9259f9aeab9bf222a5775348546ef87c68ee02eee379
+        dest: cuda_cudart
+
+  # Runtime time modules
   - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
 
   - name: libnotify
@@ -52,8 +138,7 @@ modules:
             <: '0.8.2'
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debian/patches/$p" -d .; fi; done
+          - apply-patches.sh
 
   - name: boost
     buildsystem: simple
@@ -77,8 +162,7 @@ modules:
             <: '1.82.0'
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debian/patches/$p" -d .; fi; done
+          - apply-patches.sh
 
   - name: avahi
     cleanup:
@@ -120,8 +204,7 @@ modules:
             <: '0.9'
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debian/patches/$p" -d .; fi; done
+          - apply-patches.sh
           - autoreconf -ivf
 
   - name: libevdev
@@ -143,8 +226,7 @@ modules:
             <: '1.13.1'
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debian/patches/$p" -d .; fi; done
+          - apply-patches.sh
 
   - name: numactl
     buildsystem: autotools
@@ -162,8 +244,7 @@ modules:
             <: '2.0.17'
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debian/patches/$p" -d .; fi; done
+          - apply-patches.sh
 
   - name: xrandr
     subdir: xrandr
@@ -179,12 +260,12 @@ modules:
             <: '7.8'
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debian/patches/$p" -d .; fi; done
+          - apply-patches.sh
 
   - name: miniupnpc
     buildsystem: cmake-ninja
     config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
       - -DUPNPC_BUILD_SAMPLE=OFF
       - -DUPNPC_BUILD_SHARED=ON
       - -DUPNPC_BUILD_TESTS=OFF
@@ -200,40 +281,16 @@ modules:
             <: '2.2.5'
       - type: shell
         commands:
-          - for p in $(cat debian/patches/series); do if [[ $p != "#"* ]]; then patch
-            -Np1 -i "debian/patches/$p" -d .; fi; done
-
-  - name: cuda
-    build-options:
-      no-debuginfo: true
-    buildsystem: simple
-    cleanup:
-      - '*'
-    build-commands:
-      - chmod u+x ./cuda.run
-      - ./cuda.run --silent --toolkit --toolkitpath=$FLATPAK_DEST/cuda --no-opengl-libs
-        --no-man-page --no-drm --override --tmpdir=$FLATPAK_BUILDER_BUILDDIR
-      - rm ./cuda.run
-    sources:
-      - type: file
-        only-arches:
-          - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_550.54.14_linux.run
-        sha256: e6a842f4eca9490575cdb68b6b1bb78d47b95a897de48dee292c431892e57d17
-        dest-filename: cuda.run
-      - type: file
-        only-arches:
-          - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda_12.4.0_550.54.14_linux_sbsa.run
-        sha256: b12bfe6c36d32ecf009a6efb0024325c5fc389fca1143f5f377ae2555936e803
-        dest-filename: cuda.run
+          - apply-patches.sh
 
   - name: sunshine
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      append-path: /usr/lib/sdk/node20/bin:/app/cuda/bin:/usr/lib/sdk/llvm17/bin
+      append-path: /usr/lib/sdk/node20/bin:/usr/lib/sdk/llvm17/bin:/app/cuda/bin
       prepend-ld-library-path: /usr/lib/sdk/llvm17/lib
+      cflags: -gdwarf-4
+      cxxflags: -gdwarf-4
       env:
         CC: clang
         CXX: clang++
@@ -242,7 +299,8 @@ modules:
         npm_config_offline: 'true'
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
-      - -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+      # - -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+      - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
       # For Clang++ as CUDA host
       - -DCMAKE_CUDA_HOST_COMPILER=clang++
       - -DCMAKE_CUDA_COMPILER=nvcc
@@ -278,12 +336,10 @@ modules:
           - patches/spawn-host.patch
           - patches/remove-mfx.patch
       - type: file
+        path: sources/package-lock.json
+      - type: file
         path: dev.lizardbyte.app.Sunshine.desktop
       - type: file
         path: dev.lizardbyte.app.Sunshine.metainfo.xml
       - type: file
         path: dev.lizardbyte.app.Sunshine.sh
-      - type: file
-        path: sources/package-lock.json
-
-
