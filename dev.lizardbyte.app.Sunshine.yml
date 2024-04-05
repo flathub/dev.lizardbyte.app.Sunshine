@@ -6,7 +6,6 @@ separate-locales: false
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node20
   - org.freedesktop.Sdk.Extension.llvm17
-writable-sdk: true # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
 command: dev.lizardbyte.app.Sunshine.sh
 
 finish-args:
@@ -360,7 +359,9 @@ modules:
         only-arches:
           - aarch64
         commands:
-          - patch /usr/include/aarch64-linux-gnu/bits/math-vector.h patches/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
+          - mkdir -p $FLATPAK_DEST/include/bits
+          - cp /usr/include/aarch64-linux-gnu/bits/math-vector.h $FLATPAK_DEST/include/bits/math-vector.h
+          - patch $FLATPAK_DEST/include/bits/math-vector.h patches/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
       - type: file
         path: sources/package-lock.json
       - type: file
