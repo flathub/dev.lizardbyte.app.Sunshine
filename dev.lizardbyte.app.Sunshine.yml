@@ -128,6 +128,21 @@ modules:
         sha256: 3df3571103b056ab354e616f1c0737b1b2a25a7875b98b1b9bf32dee94449699
         dest: libcurand
 
+  - name: math-vector-patch # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
+    only-arches:
+      - aarch64
+    buildsystem: simple
+    cleanup:
+      - '*'
+    build-commands:
+      - mkdir -p $FLATPAK_DEST/include/bits
+      - cp /usr/include/aarch64-linux-gnu/bits/math-vector.h $FLATPAK_DEST/include/bits/math-vector.h
+      - patch $FLATPAK_DEST/include/bits/math-vector.h ./0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
+    sources:
+      - type: file 
+        url: https://raw.githubusercontent.com/NixOS/nixpkgs/2b47345ff54be47f71000722aafaf3d0a124c35c/pkgs/development/libraries/glibc/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
+        sha256: 35f06b79d3fd4439b3d3d0915160101bb2df5a334f8b173ca2d9463142652fa8
+
   # Runtime time modules
   - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
 
@@ -349,19 +364,6 @@ modules:
           - patches/force-cuda-arch.patch
           - patches/spawn-host.patch
           - patches/remove-mfx.patch
-      - type: file # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
-        only-arches:
-          - aarch64
-        url: https://raw.githubusercontent.com/NixOS/nixpkgs/2b47345ff54be47f71000722aafaf3d0a124c35c/pkgs/development/libraries/glibc/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
-        sha256: 35f06b79d3fd4439b3d3d0915160101bb2df5a334f8b173ca2d9463142652fa8
-        dest: patches
-      - type: shell
-        only-arches:
-          - aarch64
-        commands:
-          - mkdir -p $FLATPAK_DEST/include/bits
-          - cp /usr/include/aarch64-linux-gnu/bits/math-vector.h $FLATPAK_DEST/include/bits/math-vector.h
-          - patch $FLATPAK_DEST/include/bits/math-vector.h patches/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
       - type: file
         path: sources/package-lock.json
       - type: file
