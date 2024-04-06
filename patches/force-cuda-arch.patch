@@ -1,12 +1,11 @@
 --- ~/cmake/compile_definitions/linux.cmake
 +++ ~/cmake/compile_definitions/linux.cmake
-@@ -24,6 +24,9 @@
+@@ -76,7 +76,7 @@
+             # set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode arch=compute_90,code=sm_90")
+         endif()
  
-         message(STATUS "CUDA Compiler Version: ${CMAKE_CUDA_COMPILER_VERSION}")
-         set(CMAKE_CUDA_ARCHITECTURES "")
-+        
-+        # Force for Clang++
-+        list(APPEND CMAKE_CUDA_ARCHITECTURES 35 37)
- 
-         # https://tech.amikelive.com/node-930/cuda-compatibility-of-nvidia-display-gpu-drivers/
-         if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS 6.5)
+-        if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS 12.0)
++        if(CMAKE_CUDA_COMPILER_VERSION VERSION_LESS 12.0 OR CMAKE_CUDA_COMPILER_ID STREQUAL "Clang")
+             list(APPEND CMAKE_CUDA_ARCHITECTURES 35)
+             # set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -gencode arch=compute_35,code=sm_35")
+         endif()
