@@ -365,10 +365,10 @@ modules:
           - patches/spawn-host.patch
           - patches/remove-mfx.patch
       - type: file
-        path: sources/package-lock.json
+        path: data/package-lock.json
       - type: file
-        path: dev.lizardbyte.app.Sunshine.desktop
+        path: data/dev.lizardbyte.app.Sunshine.desktop
       - type: file
-        path: dev.lizardbyte.app.Sunshine.metainfo.xml
+        path: data/dev.lizardbyte.app.Sunshine.metainfo.xml
       - type: file
         path: dev.lizardbyte.app.Sunshine.sh
