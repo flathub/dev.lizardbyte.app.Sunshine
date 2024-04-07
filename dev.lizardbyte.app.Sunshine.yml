@@ -139,7 +139,7 @@ modules:
       - cp /usr/include/aarch64-linux-gnu/bits/math-vector.h $FLATPAK_DEST/include/bits/math-vector.h
       - patch $FLATPAK_DEST/include/bits/math-vector.h ./0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
     sources:
-      - type: file 
+      - type: file
         url: https://raw.githubusercontent.com/NixOS/nixpkgs/2b47345ff54be47f71000722aafaf3d0a124c35c/pkgs/development/libraries/glibc/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
         sha256: 35f06b79d3fd4439b3d3d0915160101bb2df5a334f8b173ca2d9463142652fa8
 
@@ -163,7 +163,7 @@ modules:
           type: git
           tag-pattern: ^debian\/(\d.+)$
           versions:
-            <: '0.8.2'
+            <: 0.8.2
       - type: shell
         commands:
           - apply-patches.sh
@@ -187,7 +187,7 @@ modules:
           type: git
           tag-pattern: ^debian\/(\d.+)$
           versions:
-            <: '1.82.0'
+            <: 1.82.0
       - type: shell
         commands:
           - apply-patches.sh
@@ -251,7 +251,7 @@ modules:
           type: git
           tag-pattern: ^debian\/(\d.\d+\.\d+)
           versions:
-            <: '1.13.1'
+            <: 1.13.1
       - type: shell
         commands:
           - apply-patches.sh
@@ -269,7 +269,7 @@ modules:
           type: git
           tag-pattern: ^debian\/(\d.+)$
           versions:
-            <: '2.0.17'
+            <: 2.0.17
       - type: shell
         commands:
           - apply-patches.sh
@@ -306,7 +306,7 @@ modules:
           type: git
           tag-pattern: ^debian\/(\d.+)$
           versions:
-            <: '2.2.5'
+            <: 2.2.5
       - type: shell
         commands:
           - apply-patches.sh
@@ -343,6 +343,7 @@ modules:
       - -DSUNSHINE_ENABLE_DRM=ON
       - -DSUNSHINE_ENABLE_CUDA=ON
       - -DSUNSHINE_BUILD_FLATPAK=ON
+      - -DTESTS_ENABLE_PYTHON_TESTS=OFF
     post-install:
       - install -D ../packaging/linux/flatpak/scripts/* $FLATPAK_DEST/bin
       - install -D ../sunshine.svg $FLATPAK_DEST/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg
@@ -353,8 +354,8 @@ modules:
       - sources/npm-generated-sources.json
       - type: git
         url: https://github.com/LizardByte/Sunshine.git
-        commit: 33c6c3e38fbd211d0234043a3a530295a92d1016
-        tag: v0.22.2
+        commit: 14ed89da0e737c4a9b9c1cf8e42ea996d95946be
+        tag: v0.23.0
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
