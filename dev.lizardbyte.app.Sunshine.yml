@@ -343,6 +343,7 @@ modules:
       - -DSUNSHINE_ENABLE_DRM=ON
       - -DSUNSHINE_ENABLE_CUDA=ON
       - -DSUNSHINE_BUILD_FLATPAK=ON
+      - -DTESTS_ENABLE_PYTHON_TESTS=OFF
     post-install:
       - install -D ../packaging/linux/flatpak/scripts/* $FLATPAK_DEST/bin
       - install -D ../sunshine.svg $FLATPAK_DEST/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg
