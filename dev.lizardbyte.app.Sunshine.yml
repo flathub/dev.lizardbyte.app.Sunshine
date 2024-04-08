@@ -86,7 +86,9 @@ modules:
     build-commands:
       - rm ./*/LICENSE
       - mkdir -p $FLATPAK_DEST/cuda
-      - cp -r ./*/* $FLATPAK_DEST/cuda
+      - cp -r cuda_nvcc/* $FLATPAK_DEST/cuda
+      - cp -r cuda_cudart/* $FLATPAK_DEST/cuda
+      - cp -r libcurand/* $FLATPAK_DEST/cuda
       - mv $FLATPAK_DEST/cuda/lib $FLATPAK_DEST/cuda/lib64
     sources:
       - sources/cuda.json
