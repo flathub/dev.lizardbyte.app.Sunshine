@@ -86,47 +86,10 @@ modules:
     build-commands:
       - rm ./*/LICENSE
       - mkdir -p $FLATPAK_DEST/cuda
-      - cp -r cuda_nvcc/* $FLATPAK_DEST/cuda
-      - cp -r cuda_cudart/* $FLATPAK_DEST/cuda
-      - cp -r libcurand/* $FLATPAK_DEST/cuda
+      - cp -r ./*/* $FLATPAK_DEST/cuda
       - mv $FLATPAK_DEST/cuda/lib $FLATPAK_DEST/cuda/lib64
     sources:
-      - type: archive
-        only-arches:
-          - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-x86_64/cuda_nvcc-linux-x86_64-11.8.89-archive.tar.xz
-        sha256: 7ee8450dbcc16e9fe5d2a7b567d6dec220c5894a94ac6640459e06231e3b39a5
-        dest: cuda_nvcc
-      - type: archive
-        only-arches:
-          - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-x86_64/cuda_cudart-linux-x86_64-11.8.89-archive.tar.xz
-        sha256: 56129e0c42df03ecb50a7bb23fc3285fa39af1a818f8826b183cf793529098bb
-        dest: cuda_cudart
-      - type: archive
-        only-arches:
-          - x86_64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/libcurand/linux-x86_64/libcurand-linux-x86_64-10.3.0.86-archive.tar.xz
-        sha256: 9d30be251c1a0463b52203f6514dac5062844c606d13e234d1386e80c83db279
-        dest: libcurand
-      - type: archive
-        only-arches:
-          - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-sbsa/cuda_nvcc-linux-sbsa-11.8.89-archive.tar.xz
-        sha256: 17d30d924a1d6ff5748a0b6a4e7c25fd39644250cef9184fba520362f70ff798
-        dest: cuda_nvcc
-      - type: archive
-        only-arches:
-          - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-sbsa/cuda_cudart-linux-sbsa-11.8.89-archive.tar.xz
-        sha256: 88f496a2f96f5bb2a9cb351e6704dfe6a45e713e571c958a3924b2a02e7adea0
-        dest: cuda_cudart
-      - type: archive
-        only-arches:
-          - aarch64
-        url: https://developer.download.nvidia.com/compute/cuda/redist/libcurand/linux-sbsa/libcurand-linux-sbsa-10.3.0.86-archive.tar.xz
-        sha256: 3df3571103b056ab354e616f1c0737b1b2a25a7875b98b1b9bf32dee94449699
-        dest: libcurand
+      - sources/cuda.json
 
   - name: math-vector-patch # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
     only-arches:
