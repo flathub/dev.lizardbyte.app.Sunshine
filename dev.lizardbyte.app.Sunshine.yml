@@ -298,8 +298,8 @@ modules:
       - sources/npm-generated-sources.json
       - type: git
         url: https://github.com/LizardByte/Sunshine.git
-        commit: 8b21db64fb8e8ffb9c24a412dbc66b7410699211
-        tag: v0.23.1
+        commit: 5f6fe3319c1fb383069d6b5fee19aeb37a8d891e
+        tag: v2024.613.3910
         x-checker-data:
           type: git
           tag-pattern: ^v([\d.]+)$
