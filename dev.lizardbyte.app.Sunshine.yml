@@ -19,7 +19,7 @@ finish-args:
   - --socket=pulseaudio
   - --socket=wayland
   - --system-talk-name=org.freedesktop.Avahi
-  # - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Flatpak
 
 cleanup:
   - /include
