@@ -26,9 +26,6 @@
       /etc/udev/rules.d/60-sunshine-input.rules</p>
     <p>NOTE: Sunshine uses a self-signed certificate. The web browser will report it as not secure,
       but it is safe.</p>
-    <p>NOTE: Allow Sunshine to start apps and games. (Optional)</p>
-    <p>sudo flatpak override
-      --talk-name=org.freedesktop.Flatpak dev.lizardbyte.app.Sunshine</p>
     <p>NOTE: KMS Grab (Optional)</p>
     <p>sudo -i PULSE_SERVER=unix:$(pactl info | awk '/Server String/{print$3}')
       flatpak run dev.lizardbyte.app.Sunshine</p>
