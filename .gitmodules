@@ -1,3 +1,3 @@
-[submodule "shared-modules"]
-	path = shared-modules
+[submodule "deps/shared-modules"]
+	path = deps/shared-modules
 	url = https://github.com/flathub/shared-modules.git
