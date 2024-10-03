@@ -1,25 +1,24 @@
-app-id: dev.lizardbyte.app.Sunshine
+---
+app-id: "dev.lizardbyte.app.Sunshine"
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: "23.08"  # requires CUDA >= 12.2
 sdk: org.freedesktop.Sdk
-separate-locales: false
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node20
-  - org.freedesktop.Sdk.Extension.llvm18
-command: dev.lizardbyte.app.Sunshine.sh
-
+command: sunshine
+separate-locales: false
 finish-args:
-  - --device=all
-  - --env=PULSE_PROP_media.category=Manager
-  - --env=SUNSHINE_MIGRATE_CONFIG=1
-  - --filesystem=home
-  - --share=ipc
-  - --share=network
-  - --socket=fallback-x11
-  - --socket=pulseaudio
-  - --socket=wayland
-  - --system-talk-name=org.freedesktop.Avahi
-  - --talk-name=org.freedesktop.Flatpak
+  - --device=all  # access all devices
+  - --env=PULSE_PROP_media.category=Manager  # allow sunshine to manage audio sinks
+  - --env=SUNSHINE_MIGRATE_CONFIG=1  # migrate config files to the new location
+  - --filesystem=home  # need to save files in user's home directory
+  - --share=ipc  # required for X11 shared memory extension
+  - --share=network  # access network
+  - --socket=pulseaudio  # play sounds using pulseaudio
+  - --socket=wayland  # show windows using Wayland
+  - --socket=fallback-x11  # show windows using X11
+  - --system-talk-name=org.freedesktop.Avahi  # talk to avahi on the system bus
+  - --talk-name=org.freedesktop.Flatpak  # talk to flatpak on the session bus
 
 cleanup:
   - /include
@@ -29,291 +28,60 @@ cleanup:
   - /lib/*.a
   - /share/man
 
-build-options:
-  ldflags: -fuse-ld=mold
-
 modules:
-  # =============================
-  # Build time modules
-  # =============================
-  - name: apply-patches
-    buildsystem: simple
-    build-commands:
-      - install -D apply-patches.sh $FLATPAK_DEST/bin/apply-patches.sh
-    cleanup:
-      - '*'
-    sources:
-      - type: file
-        path: data/apply-patches.sh
+  # Test dependencies
+  - "modules/xvfb/xvfb.json"
 
-  - name: cuda
-    build-options:
-      no-debuginfo: true
-    buildsystem: simple
-    cleanup:
-      - '*'
-    build-commands:
-      - rm ./*/LICENSE
-      - mkdir -p $FLATPAK_DEST/cuda
-      - cp -r cuda_nvcc/* $FLATPAK_DEST/cuda
-      - cp -r cuda_cudart/* $FLATPAK_DEST/cuda
-      - cp -r libcurand/* $FLATPAK_DEST/cuda
-      - mv $FLATPAK_DEST/cuda/lib $FLATPAK_DEST/cuda/lib64
-    sources:
-      - sources/cuda.json
-
-  - name: math-vector-patch # https://sourceware.org/bugzilla/show_bug.cgi?id=30909
-    only-arches:
-      - aarch64
-    buildsystem: simple
-    cleanup:
-      - '*'
-    build-commands:
-      - mkdir -p $FLATPAK_DEST/include/bits
-      - cp /usr/include/aarch64-linux-gnu/bits/math-vector.h $FLATPAK_DEST/include/bits/math-vector.h
-      - patch $FLATPAK_DEST/include/bits/math-vector.h ./0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
-    sources:
-      - type: file
-        url: https://raw.githubusercontent.com/NixOS/nixpkgs/2b47345ff54be47f71000722aafaf3d0a124c35c/pkgs/development/libraries/glibc/0001-aarch64-math-vector.h-add-NVCC-include-guard.patch
-        sha256: 35f06b79d3fd4439b3d3d0915160101bb2df5a334f8b173ca2d9463142652fa8
-
-  - modules/mold.json
-
-  - modules/xvfb.json
-
-  # =============================
-  # Runtime time modules
-  # =============================
+  # Runtime dependencies
   - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+  - "modules/avahi.json"
+  - "modules/libevdev.json"
+  - "modules/libnotify.json"
+  - "modules/miniupnpc.json"
+  - "modules/numactl.json"  # TODO: is this still needed?
 
-  - name: libnotify
-    buildsystem: meson
-    config-opts:
-      - -Dtests=false
-      - -Dintrospection=disabled
-      - -Dman=false
-      - -Dgtk_doc=false
-      - -Ddocbook_docs=disabled
-    sources:
-      - type: git
-        url: https://salsa.debian.org/gnome-team/libnotify.git
-        commit: ccf2f62ef0a4b264dd4eff32cab70a3e213ceb1a
-        tag: debian/0.8.1-1
-        x-checker-data:
-          type: git
-          tag-pattern: ^debian\/(\d.+)$
-          versions:
-            <: 0.8.2
-      - type: shell
-        commands:
-          - apply-patches.sh
-
-  - name: boost
-    buildsystem: simple
-    build-commands:
-      - cd tools/build && bison -y -d -o src/engine/jamgram.cpp src/engine/jamgram.y
-      - ./bootstrap.sh --prefix=$FLATPAK_DEST --with-libraries=locale,log,program_options,system,thread
-      - ./b2 install variant=release link=shared runtime-link=shared cxxflags="$CXXFLAGS"
-        linkflags="$LDFLAGS" -j $FLATPAK_BUILDER_N_JOBS
-    sources:
-      - type: archive
-        url: https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.gz
-        sha256: 205666dea9f6a7cfed87c7a6dfbeb52a2c1b9de55712c9c1a87735d7181452b6
-      - type: git
-        url: https://salsa.debian.org/debian/boost.git
-        commit: b940346476993b6dfd2b8a64c95762829117850e
-        tag: debian/1.81.0-7
-        x-checker-data:
-          type: git
-          tag-pattern: ^debian\/(\d.+)$
-          versions:
-            <: 1.82.0
-      - type: shell
-        commands:
-          - apply-patches.sh
-
-  - name: avahi
-    cleanup:
-      - /bin
-      - /lib/avahi
-      - /share
-    config-opts:
-      - --with-distro=none
-      - --disable-gobject
-      - --disable-introspection
-      - --disable-qt3
-      - --disable-qt4
-      - --disable-qt5
-      - --disable-gtk
-      - --disable-core-docs
-      - --disable-manpages
-      - --disable-libdaemon
-      - --disable-python
-      - --disable-pygobject
-      - --disable-mono
-      - --disable-monodoc
-      - --disable-autoipd
-      - --disable-doxygen-doc
-      - --disable-doxygen-dot
-      - --disable-doxygen-xml
-      - --disable-doxygen-html
-      - --disable-manpages
-      - --disable-xmltoman
-      - --disable-libevent
-    sources:
-      - type: git
-        url: https://salsa.debian.org/utopia-team/avahi.git
-        commit: 1412c015d348166d58ea9c192239b00769eae24e
-        tag: debian/0.8-13
-        x-checker-data:
-          type: git
-          tag-pattern: ^debian\/(\d.+)$
-          versions:
-            <: '0.9'
-      - type: shell
-        commands:
-          - apply-patches.sh
-          - autoreconf -ivf
-
-  - name: libevdev
-    buildsystem: meson
-    config-opts:
-      - -Ddocumentation=disabled
-      - -Dtests=disabled
-    cleanup:
-      - /bin
-    sources:
-      - type: git
-        url: https://salsa.debian.org/debian/libevdev.git
-        commit: 1aa7baa233d6df4cee6a66fbc61bb5ffc8b6e88d
-        tag: debian/1.13.0+dfsg-1
-        x-checker-data:
-          type: git
-          tag-pattern: ^debian\/(\d.\d+\.\d+)
-          versions:
-            <: 1.13.1
-      - type: shell
-        commands:
-          - apply-patches.sh
-
-  - name: numactl
-    buildsystem: autotools
-    cleanup:
-      - /bin
-    sources:
-      - type: git
-        url: https://salsa.debian.org/debian/numactl.git
-        commit: 640bb34497702f9aaeb8af1b491f32b91d03ec80
-        tag: debian/2.0.16-1
-        x-checker-data:
-          type: git
-          tag-pattern: ^debian\/(\d.+)$
-          versions:
-            <: 2.0.17
-      - type: shell
-        commands:
-          - apply-patches.sh
-
-  - name: xrandr
-    subdir: xrandr
-    sources:
-      - type: git
-        url: https://salsa.debian.org/xorg-team/app/x11-xserver-utils.git
-        commit: a3ecab8b1b8b24faf1a3a4237258d608022f7a31
-        tag: x11-xserver-utils-7.7+10
-        x-checker-data:
-          type: git
-          tag-pattern: ^x11-xserver-utils-(\d+\.\d+\+\d+)$
-          versions:
-            <: '7.8'
-      - type: shell
-        commands:
-          - apply-patches.sh
-
-  - name: miniupnpc
-    buildsystem: cmake-ninja
-    config-opts:
-      - -DCMAKE_BUILD_TYPE=Release
-      - -DUPNPC_BUILD_SAMPLE=OFF
-      - -DUPNPC_BUILD_SHARED=ON
-      - -DUPNPC_BUILD_TESTS=OFF
-    sources:
-      - type: git
-        url: https://salsa.debian.org/miniupnp-team/miniupnpc.git
-        commit: c5fe3aa794e92a503cecec6a4071eb6d310b4e42
-        tag: debian/2.2.4-1
-        x-checker-data:
-          type: git
-          tag-pattern: ^debian\/(\d.+)$
-          versions:
-            <: 2.2.5
-      - type: shell
-        commands:
-          - apply-patches.sh
+  # Caching is configured until here, not including CUDA, since it is too large for GitHub cache
+  - "modules/cuda.json"
 
   - name: sunshine
-    buildsystem: cmake-ninja
     builddir: true
     build-options:
-      append-path: /usr/lib/sdk/node20/bin:/usr/lib/sdk/llvm18/bin:/app/cuda/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm18/lib
-      cflags: -gdwarf-4
-      cxxflags: -gdwarf-4
+      append-path: /usr/lib/sdk/node20/bin
+      build-args:
+        - --share=network
+      test-args:
+        - --share=network
       env:
-        CC: clang
-        CXX: clang++
-        CUDA_PATH: /app/cuda
-        npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
-        npm_config_offline: 'true'
+        BUILD_VERSION: "v2024.1003.200205"
+        BRANCH: "master"
+        COMMIT: "99e2022e80a015f4cd8fe5ee11e041f8915db5b9"
+        npm_config_nodedir: /usr/lib/sdk/node20
+        NPM_CONFIG_LOGLEVEL: info
+    buildsystem: cmake-ninja
     config-opts:
+      - -DBUILD_DOCS=OFF
+      - -DBUILD_WERROR=ON
       - -DCMAKE_BUILD_TYPE=Release
-      - -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
-      - -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-      # For Clang++ as CUDA host
-      # - -DCMAKE_CUDA_HOST_COMPILER=clang++
-      # - -DCMAKE_CUDA_COMPILER=nvcc
-      # For Clang++ as CUDA Compiler
-      - -DCMAKE_CUDA_COMPILER=clang++
-      - -DCMAKE_CUDA_FLAGS=-std=c++17
-      - -DCUDA_INHERIT_COMPILE_OPTIONS=OFF
+      - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
-      - -DSUNSHINE_EXECUTABLE_PATH=flatpak run --command=sunshine dev.lizardbyte.app.Sunshine
+      - -DSUNSHINE_BUILD_FLATPAK=ON
+      - -DSUNSHINE_EXECUTABLE_PATH=/app/bin/sunshine
       - -DSUNSHINE_ENABLE_WAYLAND=ON
       - -DSUNSHINE_ENABLE_X11=ON
       - -DSUNSHINE_ENABLE_DRM=ON
       - -DSUNSHINE_ENABLE_CUDA=ON
-      - -DSUNSHINE_BUILD_FLATPAK=ON
-      - -DTESTS_ENABLE_PYTHON_TESTS=OFF
+      - -DSUNSHINE_PUBLISHER_NAME='LizardByte'
+        -DSUNSHINE_PUBLISHER_WEBSITE='https://app.lizardbyte.dev'
+        -DSUNSHINE_PUBLISHER_ISSUE_URL='https://app.lizardbyte.dev/support'
+    no-make-install: false
     post-install:
-      - install -D ../packaging/linux/flatpak/scripts/* $FLATPAK_DEST/bin
-      - install -D ../sunshine.svg $FLATPAK_DEST/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg
-      - install -D ../$FLATPAK_ID.sh $FLATPAK_DEST/bin/$FLATPAK_ID.sh
-      - install -D ../$FLATPAK_ID.metainfo.xml $FLATPAK_DEST/share/metainfo/$FLATPAK_ID.metainfo.xml
-      - install -D ../$FLATPAK_ID.desktop $FLATPAK_DEST/share/applications/$FLATPAK_ID.desktop
+      - install -D $FLATPAK_BUILDER_BUILDDIR/packaging/linux/flatpak/scripts/* /app/bin
+      - install -D $FLATPAK_BUILDER_BUILDDIR/packaging/linux/flatpak/apps.json /app/share/sunshine/apps.json
     run-tests: true
-    test-rule: ''
+    test-rule: ""  # empty to disable
     test-commands:
       - xvfb-run tests/test_sunshine --gtest_color=yes
     sources:
-      - sources/npm-generated-sources.json
       - type: git
-        url: https://github.com/LizardByte/Sunshine.git
-        commit: 8b21db64fb8e8ffb9c24a412dbc66b7410699211
-        tag: v0.23.1
-        x-checker-data:
-          type: git
-          tag-pattern: ^v([\d.]+)$
-      - type: patch
-        paths:
-          - patches/ExecStop.patch
-          - patches/force-cuda-arch.patch
-          - patches/spawn-host.patch
-          - patches/remove-mfx.patch
-      - type: file
-        path: data/package-lock.json
-      - type: file
-        path: data/dev.lizardbyte.app.Sunshine.desktop
-      - type: file
-        path: dev.lizardbyte.app.Sunshine.metainfo.xml
-      - type: file
-        path: data/dev.lizardbyte.app.Sunshine.sh
+        url: "https://github.com/ReenigneArcher/Sunshine.git"
+        commit: "99e2022e80a015f4cd8fe5ee11e041f8915db5b9"
