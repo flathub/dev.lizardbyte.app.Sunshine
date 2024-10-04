@@ -48,8 +48,6 @@ modules:
     builddir: true
     build-options:
       append-path: /usr/lib/sdk/node20/bin
-      test-args:
-        - --share=network
       env:
         BUILD_VERSION: "v2024.1004.192852"
         BRANCH: "master"
