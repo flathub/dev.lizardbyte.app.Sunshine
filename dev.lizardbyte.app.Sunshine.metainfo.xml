@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop-application">
+<component type="desktop">
   <id>dev.lizardbyte.app.Sunshine</id>
 
   <name>Sunshine</name>
@@ -15,37 +15,49 @@
     <control>gamepad</control>
   </supports>
 
-  <url type="bugtracker">https://github.com/LizardByte/Sunshine/issues</url>
   <url type="homepage">https://app.lizardbyte.dev/Sunshine</url>
+  <url type="bugtracker">https://github.com/LizardByte/Sunshine/issues</url>
+  <url type="faq">https://docs.lizardbyte.dev/projects/sunshine/latest/md_docs_2troubleshooting.html</url>
+  <url type="help">https://docs.lizardbyte.dev/projects/sunshine</url>
   <url type="donation">https://app.lizardbyte.dev/#Donate</url>
-  <url type="contact">https://app.lizardbyte.dev/support</url>
   <url type="translate">https://translate.lizardbyte.dev</url>
-  <url type="contribute">https://docs.lizardbyte.dev</url>
-  <url type="vcs-browser">https://github.com/LizardByte/Sunshine</url>
+  <url type="contact">https://app.lizardbyte.dev/support</url>
 
   <description>
     <p>
       Offering low latency, cloud gaming server capabilities with support for AMD, Intel, and Nvidia GPUs for hardware encoding. Software encoding is also available. You can connect to Sunshine from any Moonlight client on a variety of devices. A web UI is provided to allow configuration, and client pairing, from your favorite web browser. Pair from the local server or any mobile device.
     </p>
 
-    <p>NOTE: Sunshine requires additional installation steps.</p>
-    <p>flatpak run --command=additional-install.sh dev.lizardbyte.app.Sunshine</p>
+    <p>NOTE: Sunshine requires additional installation steps (Flatpak).</p>
+    <p>
+      <code>flatpak run --command=additional-install.sh dev.lizardbyte.app.Sunshine</code>
+    </p>
     <p>NOTE: Sunshine uses a self-signed certificate. The web browser will report it as not secure, but it is safe.</p>
-    <p>NOTE: KMS Grab (Optional)</p>
-    <p>sudo -i PULSE_SERVER=unix:/run/user/$(id -u $whoami)/pulse/native flatpak run dev.lizardbyte.app.Sunshine</p>
+    <p>NOTE: KMS Grab (Flatpak)</p>
+    <p>
+      <code>sudo -i PULSE_SERVER=unix:/run/user/$(id -u $whoami)/pulse/native flatpak run dev.lizardbyte.app.Sunshine</code>
+    </p>
   </description>
 
   <releases>
-<release version="2025.122.141614" date="2025-01-22">
-<description><p></p></description>
-</release>
+    <release version="0.0.0" date="1990-01-01">
+      <description>
+        <p>
+          See the full changelog on GitHub
+
+          
+        </p>
+      </description>
+    </release>
   </releases>
 
-  <developer_name>LizardByte</developer_name>
+  <developer id="dev.lizardbyte">
+    <name>LizardByte</name>
+  </developer>
   <screenshots>
     <screenshot type="default">
-      <image>https://app.lizardbyte.dev/Sunshine/assets/img/banners/AdobeStock_305732536_1920x1280.jpg</image>
-      <caption>Sunshine</caption>
+      <image>https://app.lizardbyte.dev/Sunshine/assets/img/screenshots/01-sunshine-welcome-page.png</image>
+      <caption>Sunshine welcome page</caption>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.0">
