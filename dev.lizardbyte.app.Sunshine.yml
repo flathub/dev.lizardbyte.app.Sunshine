@@ -52,9 +52,9 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/node20/bin
       env:
-        BUILD_VERSION: "v2025.122.141614"
+        BUILD_VERSION: "v2025.628.4510"
         BRANCH: "master"
-        COMMIT: "64544e7960f5141f71438d72e5dedad81c03729c"
+        COMMIT: "65f14e1003f831e776c170621bd06d8292f65155"
         XDG_CACHE_HOME: /run/build/sunshine/flatpak-node/cache
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
         npm_config_nodedir: /usr/lib/sdk/node20
@@ -89,6 +89,6 @@ modules:
       - generated-sources.json
       - type: git
         url: "https://github.com/LizardByte/Sunshine.git"
-        commit: "64544e7960f5141f71438d72e5dedad81c03729c"
+        commit: "65f14e1003f831e776c170621bd06d8292f65155"
       - type: file
         path: package-lock.json
