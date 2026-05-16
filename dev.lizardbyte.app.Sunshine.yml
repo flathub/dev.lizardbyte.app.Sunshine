@@ -12,6 +12,7 @@ finish-args:
   - --env=PULSE_PROP_media.category=Manager  # allow sunshine to manage audio sinks
   - --env=SUNSHINE_MIGRATE_CONFIG=1  # migrate config files to the new location
   - --filesystem=home  # need to save files in user's home directory
+  - --filesystem=xdg-run/pipewire-0  # required for XDG portal grab audio
   - --share=ipc  # required for X11 shared memory extension
   - --share=network  # access network
   - --socket=pulseaudio  # play sounds using pulseaudio
@@ -46,14 +47,22 @@ modules:
   # Caching is configured until here, not including CUDA, since it is too large for GitHub cache
   - "modules/cuda.json"
 
+  # FFmpeg prebuilt binaries
+  - "modules/ffmpeg.json"
+
+  # Python PyPI build-time dependencies (e.g. jinja2 for glad generator).
+  # glad-dependencies.json is generated at CI time by flatpak-pip-generator and
+  # placed alongside the manifest in the build directory.
+  - "glad-dependencies.json"
+
   - name: sunshine
     builddir: true
     build-options:
       append-path: /usr/lib/sdk/node20/bin
       env:
-        BUILD_VERSION: "2025.924.154138"
+        BUILD_VERSION: "2026.516.143833"
         BRANCH: "master"
-        COMMIT: "86188d47a7463b0f73b35de18a628353adeaa20e"
+        COMMIT: "14ffa6fdaa53f7b51512be2b3d24f3939695403c"
         XDG_CACHE_HOME: /run/build/sunshine/flatpak-node/cache
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
         npm_config_nodedir: /usr/lib/sdk/node20
@@ -66,13 +75,17 @@ modules:
       - -DBUILD_WERROR=ON
       - -DCMAKE_BUILD_TYPE=Release
       - -DCMAKE_CUDA_COMPILER=/app/cuda/bin/nvcc
+      - -DFFMPEG_PREPARED_BINARIES=/app/ffmpeg
+      - -DGLAD_SKIP_PIP_INSTALL=ON
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
       - -DSUNSHINE_BUILD_FLATPAK=ON
       - -DSUNSHINE_EXECUTABLE_PATH=/app/bin/sunshine
+      - -DSUNSHINE_ENABLE_CUDA=ON
+      - -DSUNSHINE_ENABLE_DRM=ON
+      - -DSUNSHINE_ENABLE_KWIN=ON
+      - -DSUNSHINE_ENABLE_PORTAL=ON
       - -DSUNSHINE_ENABLE_WAYLAND=ON
       - -DSUNSHINE_ENABLE_X11=ON
-      - -DSUNSHINE_ENABLE_DRM=ON
-      - -DSUNSHINE_ENABLE_CUDA=ON
       - -DSUNSHINE_PUBLISHER_NAME='LizardByte'
       - -DSUNSHINE_PUBLISHER_WEBSITE='https://app.lizardbyte.dev'
       - -DSUNSHINE_PUBLISHER_ISSUE_URL='https://app.lizardbyte.dev/support'
@@ -88,6 +101,6 @@ modules:
       - generated-sources.json
       - type: git
         url: "https://github.com/LizardByte/Sunshine.git"
-        commit: "86188d47a7463b0f73b35de18a628353adeaa20e"
+        commit: "14ffa6fdaa53f7b51512be2b3d24f3939695403c"
       - type: file
         path: package-lock.json
