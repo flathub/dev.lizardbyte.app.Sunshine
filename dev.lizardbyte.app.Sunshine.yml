@@ -1,10 +1,14 @@
 ---
 app-id: "dev.lizardbyte.app.Sunshine"
-runtime: org.freedesktop.Platform
-runtime-version: "24.08"
-sdk: org.freedesktop.Sdk
-sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node20
+runtime: org.kde.Platform
+runtime-version: "6.10"
+sdk: org.kde.Sdk
+add-build-extensions:
+  org.freedesktop.Sdk.Extension.node20:
+    directory: lib/sdk/node20
+    version: "25.08"
+    no-autodownload: true
+    autodelete: false
 command: sunshine
 separate-locales: false
 finish-args:
@@ -20,6 +24,7 @@ finish-args:
   - --socket=fallback-x11  # show windows using X11
   - --system-talk-name=org.freedesktop.Avahi  # talk to avahi on the system bus
   - --talk-name=org.freedesktop.Flatpak  # talk to flatpak on the session bus
+  - --talk-name=org.kde.StatusNotifierWatcher  # talk to system tray on the session bus
 
 cleanup:
   - /include
@@ -37,7 +42,6 @@ modules:
   - "modules/nlohmann_json.json"
 
   # Runtime dependencies
-  - shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json
   - "modules/avahi.json"
   - "modules/boost.json"
   - "modules/libevdev.json"
@@ -51,8 +55,8 @@ modules:
   - "modules/ffmpeg.json"
 
   # Python PyPI build-time dependencies (e.g. jinja2 for glad generator).
-  # glad-dependencies.json is generated at CI time by flatpak-pip-generator and
-  # placed alongside the manifest in the build directory.
+  # glad-dependencies.json is generated from uv.lock at CI time by flatpak-pip-generator
+  # and placed alongside the manifest in the build directory.
   - "glad-dependencies.json"
 
   - name: sunshine
@@ -60,9 +64,9 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/node20/bin
       env:
-        BUILD_VERSION: "2026.516.143833"
+        BUILD_VERSION: "2026.906.222525"
         BRANCH: "master"
-        COMMIT: "14ffa6fdaa53f7b51512be2b3d24f3939695403c"
+        COMMIT: "cb72dffa3233c5815cd5ba88f09f049dd679ba75"
         XDG_CACHE_HOME: /run/build/sunshine/flatpak-node/cache
         npm_config_cache: /run/build/sunshine/flatpak-node/npm-cache
         npm_config_nodedir: /usr/lib/sdk/node20
@@ -79,13 +83,13 @@ modules:
       - -DGLAD_SKIP_PIP_INSTALL=ON
       - -DSUNSHINE_ASSETS_DIR=share/sunshine
       - -DSUNSHINE_BUILD_FLATPAK=ON
-      - -DSUNSHINE_EXECUTABLE_PATH=/app/bin/sunshine
       - -DSUNSHINE_ENABLE_CUDA=ON
       - -DSUNSHINE_ENABLE_DRM=ON
       - -DSUNSHINE_ENABLE_KWIN=ON
       - -DSUNSHINE_ENABLE_PORTAL=ON
       - -DSUNSHINE_ENABLE_WAYLAND=ON
       - -DSUNSHINE_ENABLE_X11=ON
+      - -DSUNSHINE_EXECUTABLE_PATH=/app/bin/sunshine
       - -DSUNSHINE_PUBLISHER_NAME='LizardByte'
       - -DSUNSHINE_PUBLISHER_WEBSITE='https://app.lizardbyte.dev'
       - -DSUNSHINE_PUBLISHER_ISSUE_URL='https://app.lizardbyte.dev/support'
@@ -101,6 +105,6 @@ modules:
       - generated-sources.json
       - type: git
         url: "https://github.com/LizardByte/Sunshine.git"
-        commit: "14ffa6fdaa53f7b51512be2b3d24f3939695403c"
+        commit: "cb72dffa3233c5815cd5ba88f09f049dd679ba75"
       - type: file
         path: package-lock.json
