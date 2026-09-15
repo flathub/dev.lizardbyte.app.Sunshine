@@ -28,14 +28,14 @@
 
     <p>NOTE: Sunshine requires additional installation steps on Flatpak.</p>
     <p>
-      <code>flatpak run --command=additional-install.sh dev.lizardbyte.app.Sunshine</code>
+      Run <code>flatpak run --command=additional-install.sh dev.lizardbyte.app.Sunshine</code>
     </p>
     <p>NOTE: Sunshine uses a self-signed certificate. The web browser will report it as not secure, but it is safe.</p>
   </description>
 
   <releases>
-    <release version="2026.906.222525" date="2026-09-06">
-      <url>https://github.com/LizardByte/Sunshine/releases/tag/v2026.906.222525</url>
+    <release version="2026.914.233613" date="2026-09-14">
+      <url>https://github.com/LizardByte/Sunshine/releases/tag/v2026.914.233613</url>
       <description>
         <p>See the changelog on GitHub</p>
       </description>
